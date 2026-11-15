@@ -13,9 +13,10 @@
        PRODUCT_PACKAGES. The device ships mz_vendor_bin_nqnfcinfo instead. -->
 
   <!-- Stock display stack: composer/allocator/demura and the gralloc mapper.
-       libdisplayconfig.qti still resolves for the power HAL through the
-       namespace import in hardware/qcom-caf/sm8550/Android.bp to
-       vendor/qcom/opensource/display. -->
+       BoardConfig.mk sets the upstream QCOM_SOONG_NAMESPACE option to
+       vendor/qcom/opensource/display so the power HAL's fully qualified
+       libdisplayconfig.qti dependency resolves there. Namespace imports do
+       not redirect fully qualified module references. -->
   <remove-project path="hardware/qcom-caf/sm8550/display" />
 
   <!-- QTI source audio stack (AGM / PAL / graphservices / primary HAL). -->
