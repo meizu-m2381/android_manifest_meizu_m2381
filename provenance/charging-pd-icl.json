@@ -1,0 +1,16 @@
+{
+  "input_sha256": "8da01509b610ba864add19b06a5db51b6d3ee4d5bddf696e2d9a633c21288b4f",
+  "output_sha256": "57676136fb51ce8508053c9d10784a170d0c202366fc0f8a3b6e624b894c0874",
+  "text_address": "0x38f4",
+  "file_offset": 22772,
+  "before": "49098052",
+  "after": "49018052",
+  "purpose": "PD ignores USB gadget ICL; negotiated PD and thermal policy remain authoritative",
+  "device": "m2381",
+  "module": "qti_battery_charger.ko",
+  "kind": "stock-binary-compatibility-fix",
+  "input": "vendor/meizu/m2381/proprietary/vendor_dlkm/lib/modules/qti_battery_charger.ko",
+  "output": "vendor/meizu/m2381/compat/vendor_dlkm/lib/modules/qti_battery_charger.ko",
+  "tool": "tools/configure_pd_icl.py",
+  "validation": "Android 17, same PC PD port: four connected warm reboots; actual input >0, ICL 3A, ADB transfer digest matched; battery reached 100%"
+}

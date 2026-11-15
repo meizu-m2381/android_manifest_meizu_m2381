@@ -1,0 +1,37 @@
+# Mirror LoadBootScripts' default paths when ro.boot.init_rc overrides its entry.
+import /system/etc/init/hw/init.rc
+import /system/etc/init
+import /system_ext/etc/init
+import /vendor/etc/init
+import /odm/etc/init
+import /product/etc/init
+
+on early-init
+    start bootdiag_kmsg
+    start bootdiag_watch
+
+on init
+    start bootdiag_logcat
+
+service bootdiag_kmsg /metadata/bootdiag/busybox sh /metadata/bootdiag/kmsg-wrapper.sh
+    disabled
+    oneshot
+    user root
+    group root log readproc
+    seclabel u:r:su:s0
+    stdio_to_kmsg
+
+service bootdiag_watch /metadata/bootdiag/busybox sh /metadata/bootdiag/watch.sh
+    disabled
+    oneshot
+    user root
+    group root log readproc
+    seclabel u:r:su:s0
+    stdio_to_kmsg
+
+service bootdiag_logcat /system/bin/logcat -b main -b system -b crash -v threadtime -f /metadata/bootdiag/pixelos-round10-logcat.txt -r 512 -n 2 auditd:S logd:S kmsg:S *:V
+    disabled
+    user root
+    group root log readproc
+    seclabel u:r:su:s0
+    stdio_to_kmsg

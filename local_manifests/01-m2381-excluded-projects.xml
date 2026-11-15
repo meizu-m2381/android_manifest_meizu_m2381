@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<manifest>
+  <!-- M2381 installs the matched stock display stack from vendor blobs: the
+       composer/allocator/demura services and the gralloc mapper implementation
+       all come from proprietary/vendor. No module in this product builds from
+       hardware/qcom-caf/sm8550/display, so remove the project instead of
+       editing its Android.bp namespace files.
+
+       libdisplayconfig.qti is still required by android.hardware.power-service-qti.
+       After removal it resolves through the namespace import in the remaining
+       hardware/qcom-caf/sm8550/Android.bp linkfile to
+       vendor/qcom/opensource/display, which is the same module name upstream
+       uses when the CAF display project is absent. -->
+  <remove-project path="hardware/qcom-caf/sm8550/display" />
+</manifest>

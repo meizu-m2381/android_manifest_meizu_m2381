@@ -1,0 +1,17 @@
+--- a/system/libbase/strings.cpp
++++ b/system/libbase/strings.cpp
+@@ -76,6 +76,14 @@
+ template std::string Trim(std::string_view&);
+ template std::string Trim(std::string_view&&);
+ 
++#if defined(__ANDROID_VENDOR__)
++// m2381 API 33 vendor ABI compatibility.
++// Stock health, boot-control and NFC HALs reference the old non-template symbol.
++std::string Trim(const std::string& s) {
++  return Trim<const std::string&>(s);
++}
++#endif
++
+ // These cases were measured either to be used during build by more than one binary, or during
+ // runtime as a significant portion of total calls.
+ // Instantiate them to aid compile time and binary size.

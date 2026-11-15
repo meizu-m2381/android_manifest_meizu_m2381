@@ -1,0 +1,50 @@
+[
+  {
+    "path": "system/libbase/strings.cpp",
+    "patch": "patches/platform/0001-system-libbase-strings.cpp.patch",
+    "before_sha256": "12e70fe4ff6eae9825a05514902fae31ca9ec529831594a89dbc84e90b375940",
+    "after_sha256": "a7727e6c795ef978cd71e71a9848c599516febdd665d79701ca0815f839134a3",
+    "baseline_source": "reconstructed-by-removing-documented-compatibility-additions",
+    "optional": false
+  },
+  {
+    "path": "system/libbase/file.cpp",
+    "patch": "patches/platform/0002-system-libbase-file.cpp.patch",
+    "before_sha256": "4ac079123dc60a7aba84a21395d67ac49bb0af7ee1f74fcea395a9425e1124a8",
+    "after_sha256": "fc3b8c20cbd4bb4dbf5f9a0b2233485aedea454c348142d110bc5768878fcfc7",
+    "baseline_source": "reconstructed-by-removing-documented-compatibility-additions",
+    "optional": false
+  },
+  {
+    "path": "prebuilts/vndk/v33/arm/configs/llndk.libraries.txt",
+    "patch": "patches/platform/0003-prebuilts-vndk-v33-arm-configs-llndk.libraries.txt.patch",
+    "before_sha256": "082c4756a548da454f030fd9e1ff107aa6e226997643d5b876125a2a0afd2958",
+    "after_sha256": "5e74ef39a75443ec771497a8d260d8e98b752b5a694b5bede905e36c8ef9f3f2",
+    "baseline_source": "saved-before-change",
+    "optional": false
+  },
+  {
+    "path": "prebuilts/vndk/v33/arm64/configs/llndk.libraries.txt",
+    "patch": "patches/platform/0004-prebuilts-vndk-v33-arm64-configs-llndk.libraries.txt.patch",
+    "before_sha256": "ec0041af0558baf7507aa6deb2bc0523baa7dae479d7128ef1ea96f5c5375943",
+    "after_sha256": "e6c86b066ae629cbe3287151fea225628e2ea2b848f9f996b3ad736cb351c1b4",
+    "baseline_source": "saved-before-change",
+    "optional": false
+  },
+  {
+    "path": "vendor/lineage/build/soong/Android.bp",
+    "patch": "patches/platform/0005-vendor-lineage-build-soong-Android.bp.patch",
+    "before_sha256": "f7da41a5c5f31873305207e4c8d5cc7d4998ed43471f143743df0a063611bee2",
+    "after_sha256": "e82d6178171b8934b932bf732430ce87194f0d65a66289d97c36ba460aa25a10",
+    "baseline_source": "https://raw.githubusercontent.com/LineageOS/android_vendor_lineage/lineage-23.2/build/soong/Android.bp",
+    "optional": false
+  },
+  {
+    "path": "vendor/pixel/gms/TurboAdapter_NoBatt/Android.bp",
+    "patch": "patches/platform/0006-vendor-pixel-gms-TurboAdapter_NoBatt-Android.bp.patch",
+    "before_sha256": "3f88713fe6db701fe1bfafb3db5693171577bd998f238d667c6243de51a73e03",
+    "after_sha256": "90f637d0108daefa5bf15d1c0155f9fb710323b52764718a77a31ac29b40b674",
+    "baseline_source": "reconstructed-by-removing-documented-R8-workaround",
+    "optional": true
+  }
+]

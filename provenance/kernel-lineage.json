@@ -1,0 +1,15 @@
+{
+  "description": "Observed local kernel lineage; not proof of an official unmodified firmware image.",
+  "source": "local/Image.b or original workspace Image.b (not distributed)",
+  "source_sha256": "6874d073b39f2b32b38b316d294356b3a2c37f1d6aada99ee0fffe34503c9e69",
+  "source_kernelpatch_version": "0.12.0",
+  "restoration_tool": "diagnostics/tools/restore_kernelpatch_012.py",
+  "restored_sha256": "0f082b0fa6d21007a24b6a11976a08867be6612e65cfe1db29bbc08e2462648e",
+  "restored_bytes": 46885376,
+  "verified_candidate_boot_sha256": "3dd860b5abef9206de357609b4ce7922494bc8c8111503814c175d38ee5357ef",
+  "verified_candidate_kernel_sha256": "0f082b0fa6d21007a24b6a11976a08867be6612e65cfe1db29bbc08e2462648e",
+  "device_tree_default_aligned_with_diagnostic_candidate": true,
+  "source_backup_location": "local-only; original workspace backup preserved",
+  "bundled_path": "device/meizu/m2381-kernel/Image",
+  "bundled_sha256": "0f082b0fa6d21007a24b6a11976a08867be6612e65cfe1db29bbc08e2462648e"
+}

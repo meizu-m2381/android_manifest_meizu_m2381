@@ -1,0 +1,10 @@
+[
+  {
+    "source": "device/meizu/m2381/init/vendor_modprobe.sh",
+    "path": "diagnostics/reference-round47/vendor-modprobe.round47.sh",
+    "before_sha256": "8a032d1bd6ffca870f947421d3bc494bb6bcdb463260d9b8114b7b4d08f7138c",
+    "after_sha256": "d59590eafec6c68723f6a96948781697b367dea3facb322ffcd3d6b2d86119bf",
+    "insert_offset": 2422,
+    "insert_utf8": "\techo \"<4>BOOTDIAG47: vendor_modprobe_normal_ready\" >/dev/kmsg\n"
+  }
+]

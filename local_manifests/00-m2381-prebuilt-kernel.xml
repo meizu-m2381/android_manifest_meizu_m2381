@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<manifest>
+  <!-- Keep upstream dependencies: Soong resolves Microdroid/Trusty modules
+       even with a stock 5.15 device kernel. Use shallow/partial Git download
+       instead of excluding projects whose global dependencies are required. -->
+</manifest>

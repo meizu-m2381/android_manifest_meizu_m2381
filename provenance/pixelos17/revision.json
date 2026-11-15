@@ -1,0 +1,11 @@
+{
+  "manifest": "https://github.com/PixelOS-AOSP/android_manifest",
+  "branch": "seventeen",
+  "commit": "29f6010bcd2bd4742502ea7ccee763c64f02a3c1",
+  "aosp_tag": "android-17.0.0_r1",
+  "lineage_branch": "lineage-24.0",
+  "release": "cp2a",
+  "locked_revisions": "revisions.xml",
+  "project_count": 1232,
+  "status": "source-sync-complete; inputs, patches and real product configuration validated; build in progress; device unverified"
+}

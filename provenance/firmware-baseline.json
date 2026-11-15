@@ -1,0 +1,31 @@
+{
+  "id": "m2381-flyme-12.7.0.0A-observed",
+  "source": "Selected non-personal build properties from original device backup; not an official OTA package identity",
+  "properties": {
+    "ro.build.display.id": "Flyme 12.7.0.0A",
+    "ro.build.fingerprint": "meizu/meizu_20_CN/meizu20:16/BQ2A.251016.001-BP2A.250605.031.A3/1764128685:user/release-keys",
+    "ro.build.version.incremental": "1764128685",
+    "ro.build.version.release": "16",
+    "ro.vendor.build.fingerprint": "meizu/meizu_20_CN/meizu20:16/BQ2A.251016.001-BP2A.250605.031.A3/1764128685:user/release-keys",
+    "ro.vendor.build.version.release": "13",
+    "ro.vendor.build.version.sdk": "33",
+    "ro.vendor.build.security_patch": "2023-10-01",
+    "ro.vendor.api_level": "33",
+    "ro.board.api_level": "33",
+    "ro.product.model": "MEIZU 20",
+    "ro.product.device": "meizu20"
+  },
+  "kernel": {
+    "version_family": "5.15",
+    "lineage": "provenance/kernel-lineage.json"
+  },
+  "blob_inventory": "provenance/bundled-inputs.json",
+  "geometry_reference": {
+    "firmware": "Flyme 12.6.0.0A",
+    "purpose": "framework geometry reference only; not the vendor driver baseline",
+    "framework_res_sha256": "b166f5f675075467a5f1aeeff4d4b4c7c0b5a9d1fd8f008dfd2c4c897db915de"
+  },
+  "official_firmware_page": "https://foru.flyme.cn/firmwarelist-195.html",
+  "official_full_package_url": null,
+  "official_full_package_sha256": null
+}

@@ -1,0 +1,367 @@
+[
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/init/android.hardware.atrace@1.0-service.rc",
+    "before_sha256": "8d75a2c6d72ec30ac4e00419c09fedf6e685f9ba1c5b1e987f049e979e7211c9",
+    "after_sha256": "5f15baa27c467cfaf2dbda67e341fe6f267ff20557f57c5bde1edc0eccc88e62",
+    "edits": [
+      {
+        "offset": 685,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      }
+    ]
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/init/android.hardware.boot@1.2-service.rc",
+    "before_sha256": "5ea90531b8c88cb2599b846897959866cbf80d277ed5aa9f4964e979ea661fab",
+    "after_sha256": "71ac75be74dec032cd7c3530af7f4a71bd98a977187a5b2183447c63a5ba935a",
+    "edits": [
+      {
+        "offset": 81,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      },
+      {
+        "offset": 143,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      },
+      {
+        "offset": 204,
+        "before": "",
+        "after": " # [HIDL-removed]"
+      }
+    ]
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/init/android.hardware.camera.provider@2.4-external-service.rc",
+    "before_sha256": "86f9351bf620f1267697c54a9f1b18d9b0baf97ab2131ff9297ed2a9910557ee",
+    "after_sha256": "3152e6dfa45dabb8db4ba8e16f443d09b3418e80283aa08a6745da82a177c044",
+    "edits": [
+      {
+        "offset": 111,
+        "before": "",
+        "after": " # [HIDL-removed]"
+      }
+    ]
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/init/android.hardware.thermal@2.0-service.qti-v2.rc",
+    "before_sha256": "5355b2e7acb193f02db49e6e3fd83ed30216cb58f5599708e72b884596a1087d",
+    "after_sha256": "cc297174bee91baecb0e0acfd05bf1728a0df6404a3b3b3864c456fa71288f9e",
+    "edits": [
+      {
+        "offset": 1690,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      },
+      {
+        "offset": 1748,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      }
+    ]
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/init/dpmQmiMgr.rc",
+    "before_sha256": "0978e04187ab9e185da93f15e7e7ce876180767d2605f94b4870d4cbc9091c2a",
+    "after_sha256": "416911651c103db2c43cd37a6c429d1d6fc03e082ab5e27e4f5f0c57d8e24cdc",
+    "edits": [
+      {
+        "offset": 214,
+        "before": "",
+        "after": " # [HIDL-removed]"
+      }
+    ]
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/init/hw/init.qcom.rc",
+    "before_sha256": "699e4826bcec8d40353c8a220c0368a7b23b91bf9394514a353700200fc9613e",
+    "after_sha256": "eb6096b5284da716da6eb3a238defb978ca84ea31852062594bcab0416f36d3f",
+    "edits": [
+      {
+        "offset": 23790,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      }
+    ]
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/init/init.embmssl_server.rc",
+    "before_sha256": "41ce541f765a54323a0018aee97e0a9530ec168403f2b019b99e688bbcb0efa1",
+    "after_sha256": "4b4a1c0aa142ecc01dda21befedeb8df199730170f0ce20f86743691a78b23f7",
+    "edits": [
+      {
+        "offset": 280,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      },
+      {
+        "offset": 348,
+        "before": "",
+        "after": " # [HIDL-removed]"
+      }
+    ]
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/init/qconfig.rc",
+    "before_sha256": "722c08267e5280da1eec32cb214159065b4ec031f5359d7f63eda47271b705d3",
+    "after_sha256": "b44158e9f047adb7760b9b03dfe59341e6ca75073dc76c45f59856d935ea0f4b",
+    "edits": [
+      {
+        "offset": 263,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      }
+    ]
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/init/qfp-daemon.rc",
+    "before_sha256": "d4551c7b913cc3372a2f36d4f102a9130edb6688f50add36b7d1ff2d95fc3baf",
+    "after_sha256": "a68f2ed31af4ee1e8f3d3e46ac88606b8e0b2a4546c33544a0b843858962ece6",
+    "edits": [
+      {
+        "offset": 128,
+        "before": "",
+        "after": " # [HIDL-removed]"
+      }
+    ]
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/init/vendor.aks.gamepad@1.0-service.rc",
+    "before_sha256": "3ad8495e4ec61e584b941c680086facc4dee41d6bced021379cc567230e671fe",
+    "after_sha256": "d74780a3d0d05fcd120dc72dd9a7c897b569f4957f6451dd77d8456a61929132",
+    "edits": [
+      {
+        "offset": 76,
+        "before": "",
+        "after": " # [HIDL-removed]"
+      }
+    ]
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/init/vendor.display.color@1.0-service.rc",
+    "before_sha256": "70a095906a9762c95b6a6483ca162a6b5f83e3e0f4dc63b6ca9d811a441b26d9",
+    "after_sha256": "ef5724ab9b81fe2df350b169efe1f46673bbae43a8d5edf6826a191d2be648df",
+    "edits": [
+      {
+        "offset": 155,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      },
+      {
+        "offset": 224,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      },
+      {
+        "offset": 285,
+        "before": "",
+        "after": " # [HIDL-removed]"
+      },
+      {
+        "offset": 348,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      },
+      {
+        "offset": 409,
+        "before": "",
+        "after": " # [HIDL-removed]"
+      },
+      {
+        "offset": 472,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      },
+      {
+        "offset": 533,
+        "before": "",
+        "after": " # [HIDL-removed]"
+      },
+      {
+        "offset": 596,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      },
+      {
+        "offset": 658,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      }
+    ]
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/init/vendor.meizu.hardware.tiktap_hidl@1.0-service.rc",
+    "before_sha256": "234674f649381298e16a63d35907fa3899b9f9c017a8de52faf363893ec0a5c2",
+    "after_sha256": "198e735992e6499025a51f8e037397640e41e1e5689f57d252f4d2c30b926daf",
+    "edits": []
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/init/vendor.qti.camera.provider-service_64.rc",
+    "before_sha256": "f19bf36aa14853bd73cd380c822d294d0db896d612c634d46b046bf5f60c0589",
+    "after_sha256": "c1714208cb7678772054ae4353b310d3c2f60a11e6c81ae8029dde30fb362ddf",
+    "edits": [
+      {
+        "offset": 169,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      },
+      {
+        "offset": 263,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      },
+      {
+        "offset": 341,
+        "before": "",
+        "after": " # [HIDL-removed]"
+      },
+      {
+        "offset": 421,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      },
+      {
+        "offset": 499,
+        "before": "",
+        "after": " # [HIDL-removed]"
+      }
+    ]
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/init/vendor.qti.hardware.alarm@1.0-service.rc",
+    "before_sha256": "7897f041fd0c03f1160d50c1f7d2f82b7380b50c69d22ad2bf5e87cda890bfe6",
+    "after_sha256": "3fd82c7486229d6c9f6ed33f488938e8c85e636a2c94e4c404e79a47cbcb8eb0",
+    "edits": [
+      {
+        "offset": 214,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      }
+    ]
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/init/vendor.qti.hardware.display.demura-service.rc",
+    "before_sha256": "a409f73eea0fb96418755d2a2e91032ef559d1e9b9b7c4cf5f4e4bc3dc21d21d",
+    "after_sha256": "f9dbbd3f4a4beeec731e0e6852b978b58ef9cb83ebf836ebbc02f5f9318c41a7",
+    "edits": [
+      {
+        "offset": 104,
+        "before": "",
+        "after": " # [HIDL-removed]"
+      }
+    ]
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/init/vendor.qti.hardware.dsp@1.0-service.rc",
+    "before_sha256": "dc2d534f3425c73e56bd9a215c8a7094b9a6973e87531f5de2e0c2bd2283b9e0",
+    "after_sha256": "d3ce94a56ce8294437e6f3579d88cc8a85cdea636c410f269cd80e0137f673fb",
+    "edits": [
+      {
+        "offset": 268,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      }
+    ]
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/init/vendor.qti.hardware.factory@1.0-service.rc",
+    "before_sha256": "ed534af698b02afce1f0e40df9497b786f36f4217f49e62802729be49c5d64a3",
+    "after_sha256": "8eca5dbc24cb72c3cc030b320258976b21c05ec861e7d142e761b1b240d02d6c",
+    "edits": [
+      {
+        "offset": 225,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      },
+      {
+        "offset": 288,
+        "before": "",
+        "after": " # [HIDL-removed]"
+      }
+    ]
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/init/vendor.qti.hardware.limits-service.rc",
+    "before_sha256": "19612fa827eb4b86c6224a8db4fddaa255f0219f9b17df609f7e24c820daad2f",
+    "after_sha256": "eef9676db0a4e86bedf7830d9e50f188edd7897ed1f7dfff413f7d8ac90b9191",
+    "edits": [
+      {
+        "offset": 220,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      },
+      {
+        "offset": 279,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      },
+      {
+        "offset": 338,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      }
+    ]
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/init/vendor.qti.hardware.wifi.wifilearner@1.0-service.rc",
+    "before_sha256": "b58d8e4450107e376d93e8470bc18f6b2b1754df7636c919d038b1b34f17a98f",
+    "after_sha256": "f1337a6d0aed4636c2da0532e848d079aad511c8261793441f17a850f27cd14f",
+    "edits": [
+      {
+        "offset": 266,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      }
+    ]
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/init/vppservice.rc",
+    "before_sha256": "1d7bf271a72b16cc440b2766fd42b86cfc787e38d16ed4bf12087669d8c38e73",
+    "after_sha256": "d9aca61aeda2928b795ddc6cb9773434115b3e2c8628621c991391c43355c078",
+    "edits": [
+      {
+        "offset": 271,
+        "before": "",
+        "after": "# [HIDL-removed] "
+      }
+    ]
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/sensors/config/kailua_mtp_mmc56x3x_0.json",
+    "before_sha256": "6471519c0b518e6564ff4695c670b1829ecafc8f7e2038f2f5a501fc2f28fc1c",
+    "after_sha256": "aec59670abbe78cfcecd1bd8feb3c82b60510fc2370783d5994a13de89e65a9e",
+    "edits": []
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/vintf/manifest/qfp-daemon.xml",
+    "before_sha256": "5d5609e94f750eeba42557dcc0e4e962a0831efb8ca901f75aab83c82fbcc1ae",
+    "after_sha256": "c0c6e8e5195fbd14bc7a9a0d1608c23dd3b658e80f558f71eccad31ebc2a820e",
+    "edits": [
+      {
+        "offset": 141,
+        "before": "1",
+        "after": "2"
+      }
+    ]
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/etc/vintf/manifest/vendor.aks.gamepad@1.0-service.xml",
+    "before_sha256": "7d958eb49ee27b72686be75470a97b2958de025fcea3ba84918536583cf917d6",
+    "after_sha256": "816c676c6a274340c5736e68b37c14d163d2bbb6f693e7442e99314f1d8516ae",
+    "edits": []
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/firmware_mnt/image/modem_pr/mcfg/configs/mcfg_hw/mbn_hw.txt",
+    "before_sha256": "ded9c3bf7c386bea3dcdcbe2f687a28714c95f245c9e851de42c3b8a1eeff8cf",
+    "after_sha256": "4f112cbd362a93d8315fb4b340d771518cbcd1af5db183c8199eabc4b89e219e",
+    "edits": []
+  },
+  {
+    "path": "vendor/meizu/m2381/proprietary/vendor/firmware_mnt/image/modem_pr/mcfg/configs/mcfg_sw/mbn_sw.txt",
+    "before_sha256": "7138ded25eb59bda17b6ec757680102f0b98c4330dad71b14461af824a440d4a",
+    "after_sha256": "d8afa286f1e9e23a814d906348e8b0422aa6c27433b6dbea3bcc2521d68ae1b6",
+    "edits": []
+  }
+]

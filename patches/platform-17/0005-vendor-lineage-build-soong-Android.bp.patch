@@ -1,0 +1,51 @@
+--- a/vendor/lineage/build/soong/Android.bp
++++ b/vendor/lineage/build/soong/Android.bp
+@@ -18,42 +18,13 @@
+     pluginFor: ["soong_build"],
+ }
+ 
+-lineage_generator {
++genrule {
+     name: "generated_kernel_includes",
+-
+-    // The headers make command
+-    cmd: "set -e; " +
+-         "(cd $(KERNEL_BUILD_OUT_PREFIX).; " +
+-         "if [ -n \"$(TARGET_KERNEL_PLATFORM_TARGET)\" ]; then " +
+-         "    pushd $(KERNEL_PATH); " +
+-         "    ./tools/bazel --output_user_root=$(KERNEL_BUILD_OUT_PREFIX)$(genDir)/bazel-out --output_root=$(KERNEL_BUILD_OUT_PREFIX)$(genDir)/bazel-out run --experimental_convenience_symlinks=ignore --cpu=$(KERNEL_ARCH) //$(TARGET_KERNEL_SOURCE):$(TARGET_KERNEL_PLATFORM_TARGET)_uapi_headers_dist -- --destdir=$(KERNEL_BUILD_OUT_PREFIX)$(genDir); " +
+-         "    popd; " +
+-         "    gzip -d $(genDir)/kernel-uapi-headers.tar.gz; " +
+-         "    tar -xf $(genDir)/kernel-uapi-headers.tar -C $(genDir); " +
+-         "else " +
+-         "    $(PATH_OVERRIDE_SOONG) $(KERNEL_MAKE_CMD) $(KERNEL_MAKE_FLAGS) -C $(TARGET_KERNEL_SOURCE) O=$(KERNEL_BUILD_OUT_PREFIX)$(genDir) ARCH=$(KERNEL_ARCH) $(KERNEL_CROSS_COMPILE) headers_install; " +
+-         "fi; " +
+-         "vendor/lineage/tools/clean_headers.sh $(KERNEL_BUILD_OUT_PREFIX)$(genDir))",
+-
+-    // Directories that can be imported by a cc_* module generated_headers property
+-    export_include_dirs: [
+-        "usr/audio/include/uapi",
+-        "usr/include",
+-        "usr/include/audio",
+-        "usr/include/audio/include/uapi",
+-        "usr/techpack/audio/include",
+-    ],
+-
+-    // Sources for dependency tracking
+-    dep_root: "$(TARGET_KERNEL_SOURCE)",
+-    dep_files: [
+-        "Makefile",
+-        "include/**/*",
+-        "arch/$(KERNEL_ARCH)/include/**/*",
+-        "techpack/audio/include/**/*",
+-    ],
+-
+-    tool_files: [":clean_headers.sh"],
++    // M2381 uses a prebuilt kernel; this build-only header is not a runtime UAPI guarantee.
++    srcs: [":m2381_prebuilt_kernel_build_headers"],
++    cmd: "cp $(in) $(out)",
++    out: ["linux/msm_audio.h"],
++    export_include_dirs: ["."],
+ }
+ 
+ lineage_generator {

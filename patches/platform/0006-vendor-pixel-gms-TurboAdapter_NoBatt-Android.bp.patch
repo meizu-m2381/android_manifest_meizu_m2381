@@ -1,0 +1,15 @@
+--- a/vendor/pixel/gms/TurboAdapter_NoBatt/Android.bp
++++ b/vendor/pixel/gms/TurboAdapter_NoBatt/Android.bp
+@@ -40,6 +40,12 @@
+         "LibPowerStatsSymLink_NoBatt",
+     ],
+ 
++    // 本地改动：R8 处理 AIDL 生成的 interface accessor（*-IA）与 protobuf
++    // 内部类时会报 Missing class 并中断构建。该模块仅做 power stats 适配，
++    // 关闭 R8 优化不影响功能，仅 APK 体积略大。
++    optimize: {
++        enabled: false,
++    }
+ }
+ 
+ install_symlink {
