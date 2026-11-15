@@ -9,7 +9,6 @@ python3 "$repo_dir/tools/configure_pd_icl.py" --root "$aosp_dir"
 python3 "$repo_dir/tools/check_local_inputs.py" --root "$aosp_dir"
 python3 "$repo_dir/tools/check_source_lfs.py" --root "$aosp_dir"
 python3 "$repo_dir/tools/apply_platform_patches.py" --aosp "$aosp_dir" --require-applied
-python3 "$repo_dir/tools/configure_source_ownership.py" --aosp "$aosp_dir" --require-archived
 cd "$aosp_dir"
 source build/envsetup.sh
 target_release=$(sed -n 's/^aosp_target_release=//p' vendor/lineage/vars/aosp_target_release)

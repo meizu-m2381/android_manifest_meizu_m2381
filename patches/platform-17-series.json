@@ -38,5 +38,13 @@
     "after_sha256": "e08714e59d392ddaf673a335c74c1e6edb8d55998e6e3bc74a38430d6c899d0b",
     "baseline_source": "PixelOS-AOSP/android_vendor_lineage seventeen; fetched before sync",
     "optional": false
+  },
+  {
+    "path": "build/soong/ui/build/soong.go",
+    "patch": "patches/platform-17/0006-soong-host-memory-controls.patch",
+    "before_sha256": "ab745182f4fba6ab4fbd1cea6fc4943b78e588b4187dfc735cd28826bbaa7027",
+    "after_sha256": "2e453beb20864cc6fdb6f684419d15ee0bfcf82c4267de4301628477e9f338cd",
+    "baseline_source": "PixelOS17 locked build/soong revision",
+    "optional": false
   }
 ]

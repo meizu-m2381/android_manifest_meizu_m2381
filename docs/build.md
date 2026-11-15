@@ -39,16 +39,26 @@ rsync -a "$port_root/vendor/meizu/m2381/" "$android_root/vendor/meizu/m2381/"
 
 ## 3. 平台适配
 
-先检查，再应用已记录补丁：
+本适配不编译的 QTI 源码栈（CAF display、CAF audio、开源 STHAL、IPA）由 `local_manifests/01-m2381-excluded-projects.xml` 里的 `remove-project` 移除，不用改名目录：
 
 ```bash
-python3 "$port_root/tools/apply_platform_patches.py" --aosp "$android_root"
-python3 "$port_root/tools/apply_platform_patches.py" --aosp "$android_root" --apply
-python3 "$port_root/tools/configure_source_ownership.py" --aosp "$android_root"
-python3 "$port_root/tools/configure_source_ownership.py" --aosp "$android_root" --apply
+cp "$port_root"/local_manifests/*.xml "$android_root/.repo/local_manifests/"
+repo sync -c -j4 --no-clone-bundle --no-tags
 ```
 
-源码归属工具把本适配改用原厂 blobs 的 CAF 音频、vendor 音频、IPA 和 nqnfcinfo 源目录保存在 `out/m2381-disabled-sources`，没有删除它们。它不修改 manifest；后续 `repo sync` 可能重新取回目录，需要再次检查。与现有备份冲突时停止。当前 WSL 的 `hardware/qcom/audio` 和 display-commonsys-intf 目录实际存在，未将它们列入排除项。
+先确认移除生效，再检查、应用已记录补丁：
+
+```bash
+repo manifest | grep -c "qcom-caf/sm8550/display"   # 期望 0
+python3 "$port_root/tools/apply_platform_patches.py" --aosp "$android_root"
+python3 "$port_root/tools/apply_platform_patches.py" --aosp "$android_root" --apply
+```
+
+`remove-project` 是 `repo` 的正式机制：项目和它的工作目录一起消失，`repo manifest -r` 不会再遇到「清单里有、磁盘上没有」的项目。旧做法是在构建前把源码目录改名到 `out/m2381-disabled-sources`，目录仍在 manifest 里，打包阶段生成清单时必然失败；该做法及其工具已移除。
+
+`hardware/qcom-caf/common/nqnfcinfo` 不是独立项目，而是 `LineageOS/android_hardware_qcom-caf_common` 的子目录，无法用 `remove-project` 移除。它的 `nqnfcinfo` 模块不在 `PRODUCT_PACKAGES` 里，从不进入构建图；设备使用 `mz_vendor_bin_nqnfcinfo` blob，安装路径不冲突。
+
+`USE_DEVICE_SPECIFIC_DATA_IPA_CFG_MGR := true` 在设备 `BoardConfig.mk` 中设置，阻止 `BoardConfigQcom.mk` 把已移除的 `data-ipa-cfg-mgr` 路径加进 `PRODUCT_SOONG_NAMESPACES`。
 
 TurboAdapter 的历史 R8 规避补丁默认为可选；只有重现相同编译问题时，审阅后给平台工具加 `--include-r8-workaround`。`msm_audio.h` 是历史编译占位头，不可用于验证真实内核 ABI。更换成源码音频栈需要真实匹配的 UAPI。
 

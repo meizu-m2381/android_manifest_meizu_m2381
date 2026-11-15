@@ -1,15 +1,39 @@
 <?xml version='1.0' encoding='utf-8'?>
 <manifest>
-  <!-- M2381 installs the matched stock display stack from vendor blobs: the
-       composer/allocator/demura services and the gralloc mapper implementation
-       all come from proprietary/vendor. No module in this product builds from
-       hardware/qcom-caf/sm8550/display, so remove the project instead of
-       editing its Android.bp namespace files.
+  <!-- M2381 installs the matched stock stacks from vendor blobs. No module in
+       this product builds from these source trees, and the QTI source audio and
+       IPA stacks depend on kernel UAPI headers the Meizu kernel does not
+       publish. Remove the projects instead of renaming their directories
+       before each build: a renamed project still appears in the manifest, so
+       `repo manifest -r` fails at packaging time.
 
-       libdisplayconfig.qti is still required by android.hardware.power-service-qti.
-       After removal it resolves through the namespace import in the remaining
-       hardware/qcom-caf/sm8550/Android.bp linkfile to
-       vendor/qcom/opensource/display, which is the same module name upstream
-       uses when the CAF display project is absent. -->
+       hardware/qcom-caf/common/nqnfcinfo is not listed here: it is a
+       subdirectory of the LineageOS/android_hardware_qcom-caf_common project,
+       not a project of its own, and its `nqnfcinfo` module is not in
+       PRODUCT_PACKAGES. The device ships mz_vendor_bin_nqnfcinfo instead. -->
+
+  <!-- Stock display stack: composer/allocator/demura and the gralloc mapper.
+       libdisplayconfig.qti still resolves for the power HAL through the
+       namespace import in hardware/qcom-caf/sm8550/Android.bp to
+       vendor/qcom/opensource/display. -->
   <remove-project path="hardware/qcom-caf/sm8550/display" />
+
+  <!-- QTI source audio stack (AGM / PAL / graphservices / primary HAL). -->
+  <remove-project path="hardware/qcom-caf/sm8550/audio/agm" />
+  <remove-project path="hardware/qcom-caf/sm8550/audio/graphservices" />
+  <remove-project path="hardware/qcom-caf/sm8550/audio/pal" />
+  <remove-project path="hardware/qcom-caf/sm8550/audio/primary-hal" />
+
+  <!-- Sound trigger HAL sources. BOARD_SUPPORTS_OPENSOURCE_STHAL is false, so
+       BoardConfigQcom.mk does not add these to PRODUCT_SOONG_NAMESPACES. -->
+  <remove-project path="vendor/qcom/opensource/audio-hal/st-hal" />
+  <remove-project path="vendor/qcom/opensource/audio-hal/st-hal-ar" />
+  <remove-project path="vendor/qcom/opensource/audio-hal/st-hal-ar-legacy" />
+
+  <!-- IPA sources. The device sets USE_DEVICE_SPECIFIC_DATA_IPA_CFG_MGR := true
+       in BoardConfig.mk, so BoardConfigQcom.mk stops adding the CAF namespace
+       that would otherwise point at a removed path. ipacm and its config files
+       come from vendor blobs. -->
+  <remove-project path="hardware/qcom-caf/sm8550/dataipa" />
+  <remove-project path="hardware/qcom-caf/sm8550/data-ipa-cfg-mgr" />
 </manifest>

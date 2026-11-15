@@ -46,9 +46,11 @@ repo manifest -r -o pixelos17-revisions.xml
 
 设备标识片段在两个产品入口中以 `include` 最终赋值。不能把它作为最后一个 `inherit-product` 父产品：Android 对单值产品变量使用父产品优先级，先继承的 `full_base` 会保留 `PRODUCT_DEVICE=generic`，使构建错误选择通用 ARM 板。已通过 Android 17 实际 `soong_ui --dumpvars-mode` 分别验证 PixelOS 和 Lineage 产品均解析为 `m2381 / arm64 / arm`，板级目录为 `device/meizu/m2381`；编译入口会再次检查设备名和主架构。
 
-`patches/platform-17-series.json` 是独立的 Android 17 平台补丁组，包含旧 vendor libbase ABI、VNDK33 LLNDK 列表、预编译内核头生成方式、主机 Go 内存参数透传和原厂显示栈安装归属。工具根据 PixelOS major version 自动选择 Android 16 或 17 补丁组；对未知源码摘要保持拒绝应用。旧 TurboAdapter R8 绕过不自动带入 Android 17。
+`patches/platform-17-series.json` 是独立的 Android 17 平台补丁组，包含旧 vendor libbase ABI、VNDK33 LLNDK 列表、预编译内核头生成方式和主机 Go 内存参数透传。工具根据 PixelOS major version 自动选择 Android 16 或 17 补丁组；对未知源码摘要保持拒绝应用。旧 TurboAdapter R8 绕过不自动带入 Android 17。
 
-十项 Android 17 补丁已针对所取上游文件在隔离目录及同步后的实际源码中应用并核对最终 SHA-256，重复执行检查通过，未知摘要被拒绝。5418 项固定构建输入检查通过，77 项文件复制规则没有冲突，2924 项库/模块安装路径检查无错误。新编译的 32/64 位 vendor libbase 已对 123 个原厂 ELF 检查，未发现缺失符号。这些检查尚不能代替完整编译和真机验证。
+补丁组现为六项。原先的第七至十项（CAF display 命名空间两处、`BoardConfigQcom.mk` 机型特判、build-manifest 生成规则）已撤销，改由 `local_manifests/01-m2381-excluded-projects.xml` 的 `remove-project` 承担，详见 [补丁说明](patches.md)。
+
+六项 Android 17 补丁已针对所取上游文件在隔离目录及同步后的实际源码中应用并核对最终 SHA-256，重复执行检查通过，未知摘要被拒绝。5418 项固定构建输入检查通过，77 项文件复制规则没有冲突，2924 项库/模块安装路径检查无错误。新编译的 32/64 位 vendor libbase 已对 123 个原厂 ELF 检查，未发现缺失符号。这些检查尚不能代替完整编译和真机验证。
 
 完整编译首次在约 32% 处遇到内核头文件生成失败：历史 `lineage_generator` 命令直接读取设备目录，没有声明沙箱输入，而且只声明了占位输出。Android 17 的沙箱内无法读取该头文件。第五项补丁现改为标准 `genrule`，通过内核目录的 `filegroup` 显式声明输入和 `linux/msm_audio.h` 输出，确保头文件进入沙箱并被导出；没有关闭构建沙箱。该头仍是已有的编译兼容定义，不代表已获得原厂内核 UAPI，也不改变实际使用的原厂音频 HAL。
 
