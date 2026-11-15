@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<manifest>
+  <!-- Device, kernel and vendor trees checked out from the m2381 split
+       repositories instead of being copied in by rsync. With project entries
+       here, `repo manifest -r` records their commits like any upstream
+       project, and `repo status` shows their local changes.
+
+       The remote points at the working copies on the Windows side through
+       /mnt/c. Replace it with a hosted URL before sharing this manifest;
+       nothing else in the file needs to change. -->
+  <remote name="m2381-local"
+          fetch="/mnt/c/Users/zhaiy/Documents/Project/meizu20-m2381" />
+
+  <project path="device/meizu/m2381"
+           name="android_device_meizu_m2381"
+           remote="m2381-local"
+           revision="main" />
+  <project path="device/meizu/m2381-kernel"
+           name="android_device_meizu_m2381-kernel"
+           remote="m2381-local"
+           revision="main" />
+  <project path="vendor/meizu/m2381"
+           name="proprietary_vendor_meizu_m2381"
+           remote="m2381-local"
+           revision="main" />
+</manifest>
