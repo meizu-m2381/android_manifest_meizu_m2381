@@ -44,6 +44,10 @@ s2idle 内部阻塞的底层驱动。更换内核或撤销已有 CPU idle 诊断
 - 安装服务停止触发器后的正常重启：日志确认触发器在约 17.17 秒成功写入，
   开机完成、kernel-post-boot 已停止后多次读取均为 `s2idle [deep]`。
 - 本轮开机时 watchdog disable=0、console_suspend=Y，未关闭保护。
+- 最终设备配置已同步 WSL，`custom_m2381-cp2a-userdebug` 的
+  `m init.m2381.rc -j12` 编译成功（7 分 30 秒），产物与源码逐字节一致；
+  正式设备文件与诊断入口均通过 `host_init_verifier` 校验。这是模块构建，
+  本轮没有进行全量 ROM 构建或镜像刷写。
 - 最终配置下的拔线熄屏回归与长时间、低电量、充电切换等场景仍需验证。
 
 原始日志、设备标识和备份保留于工作区私有 `.local-flash/`，不纳入公开仓库。
