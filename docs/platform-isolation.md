@@ -137,3 +137,36 @@ qguard 改由本产品选择上游现有 `libprocessgroup.vendor:64`，安装当
 五个实际安装目标经 Ninja 构建退出 0：vendor 64 位 libprocessgroup、32 位 libui_shim、单独命名的 VNDK33 helper，以及两个修补后的 32 位 codec2 库。14 个安装 blob 全部符合固定修补摘要，helper 符合其固定摘要。最终真机测试使用了镜像暂存目录中这批实际安装产物，结果与候选输入测试一致。2924 个库安装路径审计无错误；当前 vendor 的 158 个 libbase 引用 ELF 无缺失 android::base 强符号；六项公共源码 before 摘要继续通过。符号集合审计仍不能替代 namespace 下的真实加载。
 
 构建和真机最终产物验证记录在机主本地 `out/m2381-runtime-fix-targets.log`、`out/m2381-runtime-fix-installed-abi.json` 与 `.local-flash/platform-isolation-20261116/final-results/`、`final-control/`、`installed-inputs-sha256.json`，不提交设备标识或原始日志。手机 boot ID、系统 libbase 摘要及原服务 PID 未变，PID 1 无测试挂载残留；本轮仍未刷机、重启或进行完整硬件回归。
+
+
+## 2026-11-17 完整启动测试与动态加载回归
+
+用户选择完整启动和硬件测试后，先备份当前 B 槽启动/AVB/recovery/dtbo/misc、完整 8 GiB super 和 metadata 诊断目录。按当前生成的产品文件清单，使用已有安装产物重新打包七个 EROFS 镜像；没有把历史 OTA 当作新版本。整包目标的缓存失效触发大量重编，已主动中止，因此这次是安装目录重打包及定向刷入验证，不是全量源码构建或通用 OTA 验证。
+
+七个逻辑分区在官方 fastbootd 写入后，按更新后的 super extent 回读摘要全部匹配；两份 super metadata 布局一致。保留已验证的 boot/init_boot/vendor_boot、诊断 recovery 和 metadata 配置，重签配套 AVB 后启动。首次新启动完成，21 个关键 vendor 文件、两份无旧符号的 system libbase 和五个启动/AVB 分区摘要核对通过。用户数据未擦除。
+
+完整启动暴露了先前探针没有覆盖的 dlopen 路径：相机和音频主 HAL 通过 libutilscallstack 进入 VNDK33 libbacktrace，旧 Basename 引用无法由当前 libbase 解析。相机 provider 因加载失败后的空指针反复崩溃，AudioPolicyManager 也没有正常初始化。此前依赖探针、符号集合审计和 21 个文件摘要全部通过，仍不足以证明这些动态加载路径正常。
+
+当前源码已构建的 vendor libutilscallstack/libunwindstack 当时仅存在于暂存目录，没有进入产品文件清单。设备现显式选择上游 `libutilscallstack.vendor` 与 `libunwindstack.vendor` 的两种架构，保留公共源码和冻结 VNDK33 输入。独立挂载命名空间补齐这两份现有 vendor 库后，camera.qcom、audio.primary.kalama、sound_trigger.primary.kalama 和三份高通音效库均完成 dlopen/重定位/构造。仅补 libutilscallstack 时仍落入旧 libunwindstack，失败对照表明两层依赖均须打包。
+
+首次启动后曾发生 `reboot,rollback_staged_install`。dumpsys rollback 记录本机已有 vendor.dpmd 连续 native crash 触发已暂存 ExtServices 模块回滚；这是实际重启事件，不能忽略，也不能据后续进入桌面判定长期稳定性通过。原有 dpmd 的 Parcel::setData 缺符号仍待解决。
+
+原始分区、照片、标识、网络信息和日志仅保留在机主本地 `.local-flash/platform-boot-20261117/`，不提交仓库。
+
+
+### 回溯依赖修复版刷入结果
+
+Make 在主机 PATH 工具中遇到 Go `newosproc` 线程创建失败；同一配置直接执行 ckati 成功。随后只使用新生成的 vendor 文件清单与镜像规则重打包，四份新增的 32/64 位 libutilscallstack/libunwindstack 全部进入产品清单，镜像提取摘要与安装输入一致。主机两处 Soong 生成工具恢复为原版 ELF，六项公共源码摘要符合记录的上游输入。
+
+修复版只更新 vendor 与配套父 vbmeta，其他十份候选镜像保持首轮字节。AVB 父签名、子链及各分区哈希树校验通过；vendor 刷入后按 super extent 回读一致。B 槽启动完成，25 个实际安装输入、五个启动/AVB 分区、两份 system libbase 和 metadata 诊断配置核对通过，用户数据保留。
+
+相机恢复枚举 5 个 HAL 设备，普通应用可见主摄与前摄两个设备；音频策略管理器恢复初始化。新启动已复测：32/64 位 GLES 各 4/4；两种架构分别调用 C2 与 OMX 高通 AVC 编码器，每项 10 帧并收到 EOS；加速度、陀螺仪、光线、接近四类传感器均注册并收到事件。接近传感器是 on-change 缓存事件，不能记成连续新采样。
+
+短时静态屏幕录制生成 1080×2400 AVC 文件，使用真实 `c2.qti.avc.decoder` 解出一帧并收到 EOS，仅证明该静态画面的 surface 编码/硬件解码链路，不代表多帧相机录像通过。NFC 开启、指纹 HAL 暂无死亡记录均只是服务状态证据。
+
+修复版启动后仍观测到原有 `vendor.dpmd` 的 Parcel::setData 与 `slim_daemon` 的 __emutls_get_address 缺符号；未把它们当成本次相机回溯依赖修复已解决的问题。dpmd 可继续参照官方 [libhidlbase shim 扩展](https://github.com/LineageOS/android_hardware_lineage_compat/commit/6abd82960c3865dfd70b6ae10aead696271e91db) 单独验证。蓝牙音频的可选实现加载错误也仍待查，通话、移动数据、蓝牙耳机、触摸指纹认证、快充和长期待机未完成验证，SELinux 仍为 Permissive。
+
+重启后真实拍照与录放测试需要用户再次解锁，结果另行补充。真实相机 provider 已占用硬件时，再用独立 dlopen 探针加载 camera.qcom 会在 CamX 构造时因资源状态 abort；这是额外探针引入的诊断崩溃，不算 provider 自发崩溃，也不作为镜像加载成功证据。主机录像探针曾因推送旧 dex 找不到入口而中止，更新 dex 后成功；早期无效探针结果不计入通过数量。
+
+
+诊断时两次用管道提前截断 `dumpsys media.camera` 输出，与两次 provider 的 SIGPIPE 退出时间对应；后续改为完整保存 dump。SIGPIPE 重启必须记入诊断影响，不能宣称 provider PID 始终不变，也不能与最初缺符号的反复 SIGSEGV 混为一谈。音频服务 PID 与启动后记录相同；后续相机实际采集仍须另外验证。
