@@ -86,6 +86,33 @@ TARGET_PREBUILT_KERNEL_HEADERS="$(get_build_var TARGET_PREBUILT_KERNEL_HEADERS)"
 - `m2381-no-platform-linkerconfig/ld.config.txt` 与 `m2381-no-platform-linkerconfig-control/ld.config.txt`：有/无设备 fragment 的实际生成配置。
 - `m2381-no-platform-revisions.xml`：本轮源码版本清单。
 
-全根目录的 host `--strict` 检查仍被现有 system 配置的 `libdexfiled.so` 需求拦住；普通模式同时提示缺少 `system/etc/vndkcorevariant.libraries.txt`。上述 linker 结果只证明本设备新增依赖的配置可达性，不表示整棵暂存根目录已通过严格依赖校验。未构建全量 OTA，也未进行刷机、启动或硬件回归。
+全根目录的 host `--strict` 检查仍被现有 system 配置的 `libdexfiled.so` 需求拦住；普通模式同时提示缺少 `system/etc/vndkcorevariant.libraries.txt`。上述 linker 结果只证明本设备新增依赖的配置可达性，不表示整棵暂存根目录已通过严格依赖校验。未构建全量 OTA，也未进行迁移版本的刷机、启动或硬件回归；下面另记已完成的真机进程隔离测试。
 
 Make 仍有历史 blob 对源码安装规则的覆盖警告，包括 libtinycompress；本轮修复的是恢复公共项目后出现的重复软链接，不能把它等同于全部历史安装归属已清理。
+
+## 2026-11-16 真机进程隔离测试
+
+**迁移尚未通过全部真机加载测试。** 测试发现一个新方案的跨命名空间问题，不能以先前 156 个 ELF 的符号集合审计作为运行时兼容保证。
+
+手机运行的是带旧 libbase 补丁的 Android 17，root adbd、SELinux permissive。测试没有刷分区或重启，也没有启动第二份传感器/NFC/指纹服务。原生启动器先调用 `unshare(CLONE_NEWNS)`，再调用 `mount(NULL, "/", NULL, MS_REC | MS_PRIVATE, NULL)` 并检查错误，随后只在子进程挂载视图中叠加以下输入：本次无补丁 vendor libbase、32/64 位官方 shim、13 个兼容 blob、原始 VNDK33 LLNDK 清单和现场生成的 linker 配置。其余依赖仍来自手机现有系统，因此这不是完整新镜像的启动验证。
+
+| 检查 | 结果与解释 |
+| --- | --- |
+| 旧 ABI 行为 | 32/64 位各 12 项通过：Trim 三种输入、Basename、Dirname、WriteStringToFd 成功/内嵌 NUL/无效 fd，以及四个旧签名的实际提供者检查；提供者均为 vendor libbase_shim |
+| 依赖发现 | 13/13 的 `linker --list` 通过；该模式不执行符号重定位，不能单独证明程序可启动 |
+| 11 个共享库的真实加载 | 最小 DT_NEEDED 可执行程序完成重定位和库构造，修补版 10/11 退出 0；未调用 HAL 业务接口 |
+| 原始 blob 对照 | 同样使用无补丁 libbase，原始版只有两个 boot_control 库通过；其余 9 个失败。32 位 codec2 首先遇到另一处缺符号，不能将全部失败都归为 libbase |
+| 传感器服务依赖探针 | 按真实服务 DT_NEEDED 顺序链接、显式引用旧 WriteStringToFd 的最小程序：原始依赖失败，增加 shim 后退出 0；没有执行真实 daemon 的 main |
+| qguard 依赖探针 | 保持真实 DT_NEEDED 顺序后，增加 shim 仍失败：VNDK33 libprocessgroup 缺旧 WriteStringToFd。手机原有带补丁 libbase 的同类基线探针退出 0，故这是移除补丁后暴露的阻塞 |
+| 现有系统基线 | 不更换任何系统库时，11 个共享库仍是 10/11 通过；32 位 codec2 同样失败，证明该项不是本次添加 shim 引入 |
+
+两个剩余问题：
+
+- `vendor/lib/libcodec2_hidl@1.0.so` 缺 `_ZNK7android19GraphicBufferSource25getHGraphicBufferProducerEv`。原有系统、原始 blob 加无补丁 libbase、修补版三组均失败。这是现有 32 位媒体依赖问题，尚未修复。
+- qguard 依赖的 `/apex/com.android.vndk.v33/lib64/libprocessgroup.so` 缺旧 `WriteStringToFd(const std::string&, borrowed_fd)`。实际 VNDK33 libprocessgroup 与本次构建提取产物摘要一致；APEX 自带 libbase 虽然导出旧签名，现场依赖选择/符号作用域仍未使该引用可用。在 vendor 可执行文件上添加 shim 并未覆盖这条跨命名空间依赖，需继续定位并采用设备局部方案，不能回写公共 libbase 或直接放宽全部 namespace。
+
+隔离工具预检曾短暂产生传播到系统视图的空挂载，已立即卸载；之后改为上述直接系统调用的启动器，并检查 PID 1 mountinfo 无测试挂载残留。早期两个临时诊断 ELF 因多次 patchelf 改写导致自身重定位崩溃，其结果已排除；最终依赖探针在链接时生成准确的依赖顺序，不再反复改写 ELF。这些诊断崩溃不能记为产品 blob 崩溃。
+
+测试前后 boot ID、原系统 32/64 位 libbase 摘要相同，boot_completed 仍为 1；原传感器、NFC、健康和指纹服务 PID 未变。原有 `vendor.dpmd` 的 Parcel::setData 缺符号日志也不属于本轮引入。以上服务存活只证明原系统仍运行，不代表迁移后的硬件通过回归。
+
+原始日志、最终探针、编译命令及挂载快照仅保存在机主本地 `.local-flash/platform-isolation-20261116/`，不随仓库发布。`results-*/` 状态文件保留多轮追加记录，应取每项最后一次结果，不能累计早期无效探针。旧 ABI 行为检查源码保存在 `tools/libbase_behavior_probe.cpp`，需要用匹配 Android 源码的 bionic/libc++ 和真实 vendor shim 构建成两种架构的 vendor 可执行程序；不可将桌面 C++ 测试替代真机结果。
