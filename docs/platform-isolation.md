@@ -59,12 +59,33 @@ TARGET_PREBUILT_KERNEL_HEADERS="$(get_build_var TARGET_PREBUILT_KERNEL_HEADERS)"
 
 本轮构建、静态 ELF、失败保护和源码恢复证据见后续验证记录；构建通过不等于已刷机或全部硬件回归通过。当前 Android 16 补丁仅作历史归档，尚未按此方案重验。
 
-## 2026-11-16 暂停验证记录
+## 2026-11-16 验证结果
 
-- 六个记录的平台文件均通过 before SHA-256 校验，四个平台仓库已提交恢复记录。
-- 13 个固定 ELF 修补可重复执行，原厂输入不变；7 项恢复与失败保护测试通过。
-- 5418 个本地输入、2924 个库安装路径检查通过；77 条复制规则无 blob 目标冲突。
-- 恢复原 manifest 的 10 个源码项目后，M2381 Soong 分析与 Make 规则生成通过。通用 `aosp_arm64` 的 dumpvars 中设备源码过滤、设备 namespace 和预编译头变量为空。
-- 实际目标编译已进入 Ninja，用户要求下班暂停，已停止全部编译进程并恢复 `out` 中两个临时 host 工具。构建日志仍在 WSL `out/m2381-no-platform-build.log`；不能将中断构建记为通过。
-- 仍待继续：目标编译完成、13 个安装产物摘要、32/64 位 shim 和未修补 libbase 的符号审计、使用未修改 VNDK33 清单验证最终 linker 可达性。未进行全量 OTA 或真机回归。
-- Make 仍有历史 blob 对源码安装规则的覆盖警告；本轮修复的是 Soong 安装清单的重复软链接，不代表全部历史覆盖已消除。
+本轮以 WSL `/home/zhaiy/pixelos17` 的 Android 17 checkout 验证，设备、内核和 vendor 的 Windows 提交分别为 `3d62681`、`f4670f8`、`fdc958b`。WSL 对应提交为 `36aec52`、`1bf5c59`、`b60fc2e`；提交信息不同，适配文件内容一致。
+
+| 验证 | 结果与边界 |
+| --- | --- |
+| 平台还原 | 六个记录文件均符合 before SHA-256；四个平台仓库恢复提交为 libbase `360ce34`、VNDK33 `e9c3e23`、Lineage `d24a238`、Soong `5c82054` |
+| 迁移及失败保护 | 7 项测试通过，包括真实六项旧补丁还原、13 个真实 blob 重复修补、未知输入及输出冲突时不写入 |
+| 安装规则 | 5418 个本地输入、2924 个库路径检查通过；77 条复制规则无 blob 目标冲突；生成的 Soong 安装清单没有重复目标 |
+| 产品隔离 | 恢复 manifest 中原排除的 10 个项目；M2381 完整 Soong 分析与 Make 规则生成通过；`aosp_arm64` dumpvars 中设备源码过滤、设备 namespace 和预编译头变量为空 |
+| 实际目标构建 | 从已生成的产品图通过 Ninja 续编，退出码 0；未跳过编译动作，但复用了已生成的产品构建图，未重新执行 lunch/Soong 分析 |
+| 内核头 | 未修改的上游 `prebuilt_kernel_includes` 实际生成 `msm_audio.h`，内容与输入相同；归档可逐字节复现 |
+| ELF 安装产物 | 13 个实际安装 blob 全部匹配修补后摘要；32/64 位官方 shim 均已安装；当前 vendor 中 156 个引用 libbase 的 ELF 没有缺失的 `android::base` 强引用符号 |
+| 排除残留补丁 | 两种架构所需的三个旧签名在当前 libbase 中缺失，均由官方 shim 导出；因此符号检查不依赖历史 libbase 补丁 |
+| VNDK33 | 重新构建并提取真实安装的 VNDK33 APEX，LLNDK 清单没有添加 `libapexsupport.so`；快照 libbinder 不依赖它，源码 vendor libbinder 依赖它 |
+| linker 对照 | 从 41 个实际安装 APEX 提取 host 验证根目录，普通模式生成配置成功；设备 fragment 让 `[vendor]` 的 default、`[system]` 和 `[unrestricted]` 的 sphal 链接到系统 libapexsupport；去掉 fragment 后这些链接全部消失 |
+
+实际构建目标包括 `libbase_shim`、`libtinycompress`、`android.hardware.boot-service.qti`、`prebuilt_kernel_headers`、host `linkerconfig`、两种架构的 vendor libbase/libbinder、13 个兼容 blob、vendor linker protobuf、`llndk.libraries.33.txt` 及 `com.android.vndk.v33`。主机的两个 Soong 工具路径已恢复为原版 ELF，七个相关 WSL Git 仓库干净。
+
+保留在 WSL `out/` 的证据：
+
+- `m2381-no-platform-resume.log`：成功续编日志。
+- `m2381-no-platform-libbase-abi.json`：156 个引用 ELF 的符号审计。
+- `m2381-no-platform-validation.json`：本轮结果及验证边界。
+- `m2381-no-platform-linkerconfig/ld.config.txt` 与 `m2381-no-platform-linkerconfig-control/ld.config.txt`：有/无设备 fragment 的实际生成配置。
+- `m2381-no-platform-revisions.xml`：本轮源码版本清单。
+
+全根目录的 host `--strict` 检查仍被现有 system 配置的 `libdexfiled.so` 需求拦住；普通模式同时提示缺少 `system/etc/vndkcorevariant.libraries.txt`。上述 linker 结果只证明本设备新增依赖的配置可达性，不表示整棵暂存根目录已通过严格依赖校验。未构建全量 OTA，也未进行刷机、启动或硬件回归。
+
+Make 仍有历史 blob 对源码安装规则的覆盖警告，包括 libtinycompress；本轮修复的是恢复公共项目后出现的重复软链接，不能把它等同于全部历史安装归属已清理。
