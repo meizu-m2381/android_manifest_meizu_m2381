@@ -1,5 +1,8 @@
 # 当前修改的范围
 
+> 2026-11-16 平台隔离迁移：下文的平台补丁和 remove-project 描述是历史构建记录。当前 Android 17 使用官方 shim、设备 linker 配置、预编译内核头接口与产品级源码选择，不再应用六项平台补丁或全局移除 HAL 项目。操作与验证边界见 [平台隔离](platform-isolation.md)。
+
+
 Android 17 使用独立的 `patches/platform-17-series.json`，Android 16 保留原补丁组。`apply_platform_patches.py` 按目标 PixelOS 版本选择；其他 ROM 可明确给出 `--series`。Android 17 当前仅完成补丁应用检查，升级验证见 `docs/upgrade-pixelos17.md`。
 
 ## 平台源码补丁

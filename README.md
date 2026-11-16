@@ -1,6 +1,6 @@
 # android_manifest_meizu_m2381
 
-Repository manifests, platform patches and tooling for building the Meizu 20
+Repository manifests, device compatibility and tooling for building the Meizu 20
 (`m2381`) tree.
 
 ## Repo init
@@ -18,16 +18,10 @@ repo init -u https://github.com/PixelOS-AOSP/android_manifest.git \
 cp local_manifests/*.xml .repo/local_manifests/
 ```
 
-| File | Purpose |
-| ---- | ------- |
-| `00-m2381-prebuilt-kernel.xml` | Keeps upstream dependencies; no projects excluded |
-| `01-m2381-excluded-projects.xml` | Removes `hardware/qcom-caf/sm8550/display` |
-
-The display project is removed because this device installs the matched stock
-display stack from vendor blobs and builds no module from that source tree.
-`libdisplayconfig.qti` still resolves, through the namespace import in the
-remaining `hardware/qcom-caf/sm8550/Android.bp` linkfile, to
-`vendor/qcom/opensource/display`.
+The three project entries add the device, kernel and vendor repositories.
+The compatibility manifest is empty: no upstream HAL projects are removed.
+M2381 selects its source stacks through product configuration, so the same
+checkout retains these projects for other devices.
 
 ## Sync
 
@@ -36,26 +30,22 @@ repo sync -c -j4 --no-clone-bundle --no-tags
 repo manifest -r -o revisions.xml
 ```
 
-## Platform patches
+## Device compatibility
 
-`patches/platform-17-series.json` lists five required patches for Android 17.
-Apply or verify them read-only:
+Android 17 no longer requires patches to libbase, VNDK33, Lineage's global
+kernel-header generator or Soong. The device uses official LineageOS
+`libbase_shim` with pinned ELF dependency fixups, a product linker fragment,
+and the upstream prebuilt kernel-header interface.
 
 ```bash
-python3 tools/apply_platform_patches.py --aosp /path/to/aosp
-python3 tools/apply_platform_patches.py --aosp /path/to/aosp --apply
+python3 device/meizu/m2381/tools/configure_blob_compat.py --aosp /path/to/aosp
+python3 tools/apply_platform_patches.py --aosp /path/to/aosp --require-unpatched
 ```
 
-| Patch | Target | Purpose |
-| ----- | ------ | ------- |
-| 0001 | `system/libbase/strings.cpp` | Non-template `Trim` symbol for API 33 vendor HALs |
-| 0002 | `system/libbase/file.cpp` | `WriteStringToFd` and `Basename` symbols for the same |
-| 0003 | `prebuilts/vndk/v33/arm/configs/llndk.libraries.txt` | Add `libapexsupport.so` to the LLNDK list |
-| 0004 | `prebuilts/vndk/v33/arm64/configs/llndk.libraries.txt` | Same for arm64 |
-| 0005 | `vendor/lineage/build/soong/Android.bp` | Build-only kernel header for the prebuilt kernel |
-
-Each entry records the SHA-256 of the file before and after patching. Unknown
-source revisions are rejected rather than force-applied.
+For an older patched checkout, commit existing changes and use `--restore`
+with the platform tool. Unknown revisions are refused. See
+[platform isolation and official references](docs/platform-isolation.md).
+The recorded patch series remains only for migration and historical review.
 
 ## Build
 
@@ -63,8 +53,8 @@ source revisions are rejected rather than force-applied.
 scripts/build-pixelos.sh /path/to/aosp [JOBS]
 ```
 
-The script checks local inputs and LFS payloads, requires the platform patches
-to be applied, then builds `custom_m2381-<release>-userdebug`.
+The script checks local inputs, LFS payloads, pinned blob compatibility and
+unpatched platform sources, then builds `custom_m2381-<release>-userdebug`.
 
 ## Documentation
 

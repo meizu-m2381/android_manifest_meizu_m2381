@@ -1,40 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <manifest>
-  <!-- M2381 installs the matched stock stacks from vendor blobs. No module in
-       this product builds from these source trees, and the QTI source audio and
-       IPA stacks depend on kernel UAPI headers the Meizu kernel does not
-       publish. Remove the projects instead of renaming their directories
-       before each build: a renamed project still appears in the manifest, so
-       `repo manifest -r` fails at packaging time.
-
-       hardware/qcom-caf/common/nqnfcinfo is not listed here: it is a
-       subdirectory of the LineageOS/android_hardware_qcom-caf_common project,
-       not a project of its own, and its `nqnfcinfo` module is not in
-       PRODUCT_PACKAGES. The device ships mz_vendor_bin_nqnfcinfo instead. -->
-
-  <!-- Stock display stack: composer/allocator/demura and the gralloc mapper.
-       BoardConfig.mk sets the upstream QCOM_SOONG_NAMESPACE option to
-       vendor/qcom/opensource/display so the power HAL's fully qualified
-       libdisplayconfig.qti dependency resolves there. Namespace imports do
-       not redirect fully qualified module references. -->
-  <remove-project path="hardware/qcom-caf/sm8550/display" />
-
-  <!-- QTI source audio stack (AGM / PAL / graphservices / primary HAL). -->
-  <remove-project path="hardware/qcom-caf/sm8550/audio/agm" />
-  <remove-project path="hardware/qcom-caf/sm8550/audio/graphservices" />
-  <remove-project path="hardware/qcom-caf/sm8550/audio/pal" />
-  <remove-project path="hardware/qcom-caf/sm8550/audio/primary-hal" />
-
-  <!-- Sound trigger HAL sources. BOARD_SUPPORTS_OPENSOURCE_STHAL is false, so
-       BoardConfigQcom.mk does not add these to PRODUCT_SOONG_NAMESPACES. -->
-  <remove-project path="vendor/qcom/opensource/audio-hal/st-hal" />
-  <remove-project path="vendor/qcom/opensource/audio-hal/st-hal-ar" />
-  <remove-project path="vendor/qcom/opensource/audio-hal/st-hal-ar-legacy" />
-
-  <!-- IPA sources. The device sets USE_DEVICE_SPECIFIC_DATA_IPA_CFG_MGR := true
-       in BoardConfig.mk, so BoardConfigQcom.mk stops adding the CAF namespace
-       that would otherwise point at a removed path. ipacm and its config files
-       come from vendor blobs. -->
-  <remove-project path="hardware/qcom-caf/sm8550/dataipa" />
-  <remove-project path="hardware/qcom-caf/sm8550/data-ipa-cfg-mgr" />
+  <!-- Empty migration file: replacing the previous copy removes historical
+       global exclusions. Stock HAL selection now lives in this product's
+       PRODUCT_SOURCE_ROOT_DIRS. Run repo sync to restore removed projects. -->
 </manifest>

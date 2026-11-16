@@ -53,6 +53,32 @@ def symbols(path):
     return bits, undefined, defined
 
 
+def needed(path):
+    """Read DT_NEEDED without executing the ARM/ARM64 binary."""
+    data = path.read_bytes()
+    bits = data[4]
+    if bits == 2:
+        offset = struct.unpack_from('<Q', data, 40)[0]
+        stride, count = struct.unpack_from('<HH', data, 58)
+        section_fmt, dynamic_fmt = '<IIQQQQIIQQ', '<qQ'
+    else:
+        offset = struct.unpack_from('<I', data, 32)[0]
+        stride, count = struct.unpack_from('<HH', data, 46)
+        section_fmt, dynamic_fmt = '<IIIIIIIIII', '<iI'
+    sections = [struct.unpack_from(section_fmt, data, offset + i * stride) for i in range(count)]
+    result = set()
+    for section in sections:
+        if section[1] != 6:
+            continue
+        strings_section = sections[section[6]]
+        strings = data[strings_section[4]:strings_section[4] + strings_section[5]]
+        for position in range(section[4], section[4] + section[5], struct.calcsize(dynamic_fmt)):
+            tag, value = struct.unpack_from(dynamic_fmt, data, position)
+            if tag == 1:
+                result.add(strings[value:strings.index(b'\0', value)].decode())
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("vendor", type=Path)
@@ -65,6 +91,11 @@ def main():
     if not args.only_64:
         libraries[1] = args.lib32 or args.vendor / "lib/libbase.so"
     exports = {bits: symbols(path)[2] for bits, path in libraries.items()}
+    shim_exports = {}
+    for bits, directory in ((1, 'lib'), (2, 'lib64')):
+        shim = args.vendor / directory / 'libbase_shim.so'
+        if bits in exports and shim.is_file():
+            shim_exports[bits] = symbols(shim)[2]
     failures, references = [], 0
     for directory in ("bin", "lib", "lib64"):
         for path in sorted((args.vendor / directory).rglob("*")):
@@ -78,7 +109,12 @@ def main():
                 continue
             if undefined:
                 references += 1
-            missing = sorted(undefined - exports[bits])
+            available = exports[bits]
+            # The shim only counts when the binary explicitly loads it. Merely
+            # placing a library in vendor must not hide an unpatched consumer.
+            if 'libbase_shim.so' in needed(path):
+                available = available | shim_exports.get(bits, set())
+            missing = sorted(undefined - available)
             if missing:
                 failures.append({"path": path.relative_to(args.vendor).as_posix(),
                                  "missing": missing})

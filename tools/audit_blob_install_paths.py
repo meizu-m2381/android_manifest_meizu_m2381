@@ -15,7 +15,7 @@ def main():
     destinations = defaultdict(list)
     checked = 0
     for block in args.makefile.read_text(encoding='utf-8').split('include $(CLEAR_VARS)'):
-        source = re.search(r'^LOCAL_SRC_FILES := proprietary/([^/]+)/(lib(?:64)?/[^\n]+)$', block, re.M)
+        source = re.search(r'^LOCAL_SRC_FILES := (?:proprietary|compat)/([^/]+)/(lib(?:64)?/[^\n]+)$', block, re.M)
         if not source:
             continue
         part, relative = source.groups()

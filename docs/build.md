@@ -1,6 +1,6 @@
 # Meizu 20 Android 16 构建准备
 
-`pixelos-17` 分支的 Android 17 同步和适配方法见 [升级说明](upgrade-pixelos17.md)。本页保留 Android 16 构建参考；不要将下面的 sixteen-qpr2 同步命令用于本次 17 升级。
+当前 Android 17 的无平台补丁构建方法见 [平台隔离与迁移](platform-isolation.md)。以下 `remove-project`、平台补丁和旧目录结构仅为历史记录，不能与当前 split 树混用。本页保留 Android 16 构建参考；不要将下面的 sixteen-qpr2 同步命令用于本次 17 升级。
 
 本归档针对 PixelOS `sixteen-qpr2` / 16.2、LineageOS 23.2、`bp4a`，不是 Android 17。已有完整构建曾成功，但本次整理后的仓库未做全新同步后的全量编译或刷机测试；平台补丁会拒绝未知源码摘要，遇到拒绝必须审阅差异，不能强行套到新分支。
 
