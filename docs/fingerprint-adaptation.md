@@ -29,6 +29,8 @@ QFS4008 屏下超声波；`vendor.meizu.hardware.fido@2.0-service` 是独立扩�
 - 用户确认图标位置正确、成功录入，锁屏后指纹解锁成功。
 - 系统状态确认已录入 1 枚指纹，2 次成功认证，HAL deaths=0。
 - 诊断入口通过 `host_init_verifier`；设备树已同步到 WSL。
+- `custom_m2381-cp2a-userdebug` 的 `vendor/build.prop` 目标编译成功
+  （7 分 34 秒），核对最终产物五项指纹属性均为上述值，无重复旧坐标。
 
 当前真机仍依赖 metadata 诊断入口，正式镜像交付使用设备树的 vendor 属性。
 本轮没有全量刷写 ROM。应用 BiometricPrompt、支付认证、熄屏长时间待机后解锁、
