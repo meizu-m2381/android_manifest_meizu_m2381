@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -90,7 +91,47 @@ class BlobTest(unittest.TestCase):
             self.assertEqual(self.compat.sha256(self.vendor / 'proprietary' / entry['path']), entry['sha256'])
             fixed = self.vendor / 'compat' / entry['path']
             dependencies = subprocess.check_output([str(tool), '--print-needed', str(fixed)], text=True).splitlines()
-            self.assertEqual(dependencies.count('libbase_shim.so'), 1)
+            for needed in entry.get('add_needed', [self.manifest['library']]):
+                self.assertEqual(dependencies.count(needed), 1)
+            for old, new in entry.get('replace_needed', {}).items():
+                self.assertNotIn(old, dependencies)
+                self.assertEqual(dependencies.count(new), 1)
+
+    def test_known_previous_fixup_can_upgrade_but_check_rejects_it(self):
+        self.compat.configure(self.aosp, self.device, self.vendor, True)
+        entry = next(e for e in self.manifest['files'] if e.get('previous_fixed_sha256'))
+        output = self.vendor / 'compat' / entry['path']
+        # Reconstruct the previous add-needed-only version from the original.
+        output.write_bytes((self.vendor / 'proprietary' / entry['path']).read_bytes())
+        tool = self.aosp / 'prebuilts/extract-tools/linux-x86/bin' / self.manifest['patchelf']
+        subprocess.run([str(tool), '--add-needed', self.manifest['library'], str(output)], check=True)
+        self.assertIn(self.compat.sha256(output), entry['previous_fixed_sha256'])
+        with self.assertRaises(ValueError):
+            self.compat.configure(self.aosp, self.device, self.vendor)
+        self.compat.configure(self.aosp, self.device, self.vendor, True)
+        self.assertEqual(self.compat.sha256(output), entry['fixed_sha256'])
+
+    def test_media_helper_is_reproducible_and_preserves_upstream(self):
+        sys.path.insert(0, str(self.device / 'tools'))
+        self.addCleanup(sys.path.remove, str(self.device / 'tools'))
+        helper = load('media_helper', self.device / 'tools/prepare_media_helper.py')
+        config = json.loads((self.device / 'configs/compat/media-helper.json').read_text())
+        source = self.aosp / config['source']
+        output = self.root / 'helper.so'
+        helper.prepare(self.aosp, output)
+        first = output.read_bytes()
+        helper.prepare(self.aosp, output)
+        self.assertEqual(output.read_bytes(), first)
+        self.assertEqual(hashlib.sha256(first).hexdigest(), config['fixed_sha256'])
+        self.assertEqual(self.compat.sha256(source), config['sha256'])
+        # An unknown upstream revision must fail before changing an existing output.
+        isolated = self.root / 'unknown-aosp'
+        unknown = isolated / config['source']
+        unknown.parent.mkdir(parents=True)
+        unknown.write_bytes(b'changed upstream')
+        with self.assertRaises(ValueError):
+            helper.prepare(isolated, output)
+        self.assertEqual(output.read_bytes(), first)
 
     def test_all_six_recorded_platform_patches_restore_real_source_bytes(self):
         series = TOOLS.parent / 'patches/platform-17-series.json'

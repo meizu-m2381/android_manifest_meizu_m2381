@@ -19,7 +19,7 @@
 
 ## 设备专属输入和配置
 
-`device/meizu/m2381/configs/compat/libbase-fixups.json` 固定 13 个实际打包的原厂 ELF 的原始摘要、修补摘要和旧符号。`tools/configure_blob_compat.py` 使用随源码提供的 `patchelf-0_17_2` 生成 `vendor/meizu/m2381/compat/vendor/...`，只切换对应安装规则。原始 `proprietary/` 不改写。工具先检查全组输入和已有输出；未知输入、输出冲突或规则重叠均停止。32/64 位官方 shim 由设备产品显式选择。
+`device/meizu/m2381/configs/compat/libbase-fixups.json` 固定 14 个实际打包的原厂 ELF 的原始摘要、修补摘要和旧符号。`tools/configure_blob_compat.py` 使用随源码提供的 `patchelf-0_17_2` 生成 `vendor/meizu/m2381/compat/vendor/...`，只切换对应安装规则。原始 `proprietary/` 不改写。工具先检查全组输入和已有输出；未知输入、输出冲突或规则重叠均停止。已记录摘要的旧兼容副本可以用 `--apply` 升级，检查模式拒绝未升级副本。32/64 位官方 libbase shim 和 32 位官方 vendor libui shim 由设备产品显式选择。
 
 原 VNDK33 LLNDK 清单补丁源于源码构建的 **vendor libbinder** 依赖当前系统 `libapexsupport.so`。当前 VNDK33 快照中的 libbinder 不含该依赖。设备改用 `PRODUCT_VENDOR_LINKER_CONFIG_FRAGMENTS` 的 `requireLibs`，不修改冻结的 VNDK33 清单；需校验最终 linker 配置与依赖可达性。
 
@@ -92,7 +92,7 @@ Make 仍有历史 blob 对源码安装规则的覆盖警告，包括 libtinycomp
 
 ## 2026-11-16 真机进程隔离测试
 
-**迁移尚未通过全部真机加载测试。** 测试发现一个新方案的跨命名空间问题，不能以先前 156 个 ELF 的符号集合审计作为运行时兼容保证。
+**本节是修复前的历史结果；后续修复见下一节。** 当时测试发现一个新方案的跨命名空间问题，不能以先前 156 个 ELF 的符号集合审计作为运行时兼容保证。
 
 手机运行的是带旧 libbase 补丁的 Android 17，root adbd、SELinux permissive。测试没有刷分区或重启，也没有启动第二份传感器/NFC/指纹服务。原生启动器先调用 `unshare(CLONE_NEWNS)`，再调用 `mount(NULL, "/", NULL, MS_REC | MS_PRIVATE, NULL)` 并检查错误，随后只在子进程挂载视图中叠加以下输入：本次无补丁 vendor libbase、32/64 位官方 shim、13 个兼容 blob、原始 VNDK33 LLNDK 清单和现场生成的 linker 配置。其余依赖仍来自手机现有系统，因此这不是完整新镜像的启动验证。
 
@@ -116,3 +116,24 @@ Make 仍有历史 blob 对源码安装规则的覆盖警告，包括 libtinycomp
 测试前后 boot ID、原系统 32/64 位 libbase 摘要相同，boot_completed 仍为 1；原传感器、NFC、健康和指纹服务 PID 未变。原有 `vendor.dpmd` 的 Parcel::setData 缺符号日志也不属于本轮引入。以上服务存活只证明原系统仍运行，不代表迁移后的硬件通过回归。
 
 原始日志、最终探针、编译命令及挂载快照仅保存在机主本地 `.local-flash/platform-isolation-20261116/`，不随仓库发布。`results-*/` 状态文件保留多轮追加记录，应取每项最后一次结果，不能累计早期无效探针。旧 ABI 行为检查源码保存在 `tools/libbase_behavior_probe.cpp`，需要用匹配 Android 源码的 bionic/libc++ 和真实 vendor shim 构建成两种架构的 vendor 可执行程序；不可将桌面 C++ 测试替代真机结果。
+
+## 2026-11-17 修复真机加载阻塞
+
+qguard 改由本产品选择上游现有 `libprocessgroup.vendor:64`，安装当前源码构建的 vendor 库。原来没有该 vendor 库时，依赖落入 VNDK33 namespace，旧 libprocessgroup 又共享到了当前 vendor libbase。直接给 qguard 增加 shim 无法为这个 namespace 内的旧引用提供符号；选择当前 vendor 实现后，不再经过这条旧依赖。未修改 libprocessgroup、libbase、VNDK 或 linker 的公共源码。
+
+32 位媒体栈保留原厂 codec2，同时做两项设备侧修补：
+
+- 将原厂 `libcodec2_hidl@1.0.so` 的 helper 依赖改为单独命名的 `libstagefright_bufferqueue_helper-v33.so`。设备 Make 模块从冻结 VNDK33 的 32 位输入生成这个副本，只改 SONAME 并增加 libbase_shim；输入与输出摘要均由 `media-helper.json` 固定。当前 OMX 仍可使用当前 helper，冻结的 APEX 输入不变。
+- 给原厂 `libcodec2_vndk.so` 增加官方 `libui_shim.so`，补齐旧 GraphicBufferMapper::lock/lockAsync/unlock 调用。采用 LineageOS 已合并的 [394610](https://review.lineageos.org/c/LineageOS/android_hardware_lineage_compat/+/394610) 和 [394611](https://review.lineageos.org/c/LineageOS/android_hardware_lineage_compat/+/394611)，不是把 HIDL 2.0 getter 重命名为 HIDL 1.0，也没有自写空实现。保留 VNDK 库并改 SONAME 的做法可参照官方 [410069](https://review.lineageos.org/c/LineageOS/android_hardware_lineage_compat/+/410069)。
+
+无补丁 libbase 的同一真机隔离环境中，原 11 个共享库加新增的 codec2_vndk 独立探针共 **12/12** 完成重定位/构造；**14/14** 的依赖发现通过。撤去这两项媒体修补及 vendor libprocessgroup 后，codec2 的 getter 缺符号、codec2_vndk 的 mapper 缺符号和 qguard 的旧 WriteStringToFd 缺符号再次出现，形成失败对照。
+
+`tools/build_vendor_relocation_probe.py` 在链接时保持原服务的 DT_NEEDED 顺序，为全部强引用符号名生成实际重定位。传感器服务 197 个、qguard 142 个强引用名检查均退出 0；该工具不检查原符号版本、弱引用、dlopen 路径或原程序 main，不能替代真实服务和硬件回归。
+
+`tools/media_helper_behavior_probe.cpp` 使用冻结 API33 头文件构建，验证准确对象布局下的 GraphicBufferSource 构造/析构、initCheck、HIDL 1.0 和 2.0 producer getter，并检查旧 getter 来自独立 helper，真机退出 0。两种架构各 12 项 libbase 行为检查也继续通过。上述检查没有执行视频编码、相机采集或实际 gralloc 映射，媒体功能仍需完整刷机后验证。
+
+迁移及失败保护测试扩展为 9 项，全部通过，包括已知旧兼容副本升级、未知输入保护，以及 helper 可复现且不改写上游输入。重新执行了 Soong 分析和 Make 规则生成；设备 Makefile 同步时统一为 Linux 换行，修复 CRLF 输入造成的原策略命令 Ninja 解析错误。分析进程使用仅在生成工具启动时注入的 Go 内存参数，两处生成工具在结束后恢复为原版 ELF。
+
+五个实际安装目标经 Ninja 构建退出 0：vendor 64 位 libprocessgroup、32 位 libui_shim、单独命名的 VNDK33 helper，以及两个修补后的 32 位 codec2 库。14 个安装 blob 全部符合固定修补摘要，helper 符合其固定摘要。最终真机测试使用了镜像暂存目录中这批实际安装产物，结果与候选输入测试一致。2924 个库安装路径审计无错误；当前 vendor 的 158 个 libbase 引用 ELF 无缺失 android::base 强符号；六项公共源码 before 摘要继续通过。符号集合审计仍不能替代 namespace 下的真实加载。
+
+构建和真机最终产物验证记录在机主本地 `out/m2381-runtime-fix-targets.log`、`out/m2381-runtime-fix-installed-abi.json` 与 `.local-flash/platform-isolation-20261116/final-results/`、`final-control/`、`installed-inputs-sha256.json`，不提交设备标识或原始日志。手机 boot ID、系统 libbase 摘要及原服务 PID 未变，PID 1 无测试挂载残留；本轮仍未刷机、重启或进行完整硬件回归。
