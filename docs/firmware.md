@@ -34,4 +34,8 @@ python3 tools/compare_firmware_inputs.py   --source /path/to/extracted-partition
 
 ## 可复现性的边界
 
-现在驱动、模块和配置可以按固定文件及摘要复现，不再依赖原作者私有工作区。旧 Android 源码树曾丢失完整 repo 元数据，因此仍没有完整的全树 revision lock；本次未新同步完整 LineageOS/PixelOS 源码并全量编译，也未重新刷机。现有诊断启动链尚未全部收敛到正式设备配置。它们是后续要补齐的工作，和驱动是否随仓库提供分别记录。
+
+驱动、模块和配置由固定文件及摘要记录。历史 Android 17 源码同步快照位于
+`provenance/pixelos17/revisions.xml`，不代表后续全部修复的最终构建版本；发布时
+应记录当次真实版本。当前兼容修复已做定向镜像启动与部分硬件验证，仍有诊断
+启动依赖及未完成的硬件验收，见 [功能状态](status.md)。

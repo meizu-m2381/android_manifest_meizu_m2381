@@ -7,5 +7,5 @@
   "release": "cp2a",
   "locked_revisions": "revisions.xml",
   "project_count": 1232,
-  "status": "source-sync-complete; inputs, patches and real product configuration validated; build in progress; device unverified"
+  "status": "historical source-sync snapshot; not the final tested device build lock"
 }

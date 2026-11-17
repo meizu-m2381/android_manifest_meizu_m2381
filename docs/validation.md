@@ -1,31 +1,24 @@
-# 验证记录（2026-11-15）
+# 维护检查
 
-本次修改没有刷写、重启或重新测试手机。
+以下命令在 Linux/WSL 中执行；`port_root` 指本工具仓，`android_root` 指已同步
+设备、vendor、内核和上游依赖的 Android 源码根目录。检查不会刷写手机。
 
-## 随附原厂文件及 ROM 产品入口
+```bash
+port_root=/path/to/android_manifest_meizu_m2381
+android_root=/path/to/android
+python3 "$port_root/tools/check_bundled_inputs.py" --root "$android_root"
+python3 "$port_root/tools/check_local_inputs.py" --root "$android_root"
+python3 "$port_root/tools/check_source_lfs.py" --root "$android_root"
+python3 "$port_root/tools/configure_pd_icl.py" --root "$android_root"
+python3 "$android_root/device/meizu/m2381/tools/configure_blob_compat.py" --aosp "$android_root"
+python3 "$port_root/tools/apply_platform_patches.py" --aosp "$android_root" --require-unpatched
+M2381_AOSP_ROOT="$android_root" python3 -m unittest discover -s "$port_root/tools/tests" -v
+```
 
-| 检查 | 结果 |
-| --- | --- |
-| 固定构建输入 | 5418 项大小及 SHA-256 一致 |
-| 完整随附文件 | 5459 项校验一致：构建输入、40 项修补前版本、一项派生脚本 |
-| Git LFS 索引 | 5421 项受 LFS 管理的路径均核对索引与实体对象；空文件按 Git LFS 的正常行为保留空 blob，其余为正确指针 |
-| 设备数据范围 | 未纳入原始带 KernelPatch 的 A/B 内核备份、设备日志、密钥和用户数据；源码及随附文本未发现已知设备身份标识或私钥内容 |
-| 默认内核 | 已切换为先前还原并与第 47 组 boot 核对一致的 B 槽内核；原工作区及其备份保持不动 |
-| 两个 ROM 入口 | 用真实 GNU Make 解析公共产品和两个入口，外部 Android 产品使用空替代文件，ROM common 使用模拟默认标识；最终产品名、设备名、品牌及 APEX 设置均正确；纯 LOS 树不注册依赖 PixelOS 的产品 |
-| 驱动版本比较 | 原工作区 5039 项 vendor 输入中 4999 项匹配最终版本、40 项匹配修补前版本，零未知/缺失 |
-| 未知固件 | 隔离目录中同时报告一个未知版本及 5038 个缺失文件，非零退出并生成完整报告，源文件未变 |
-| 安装路径 | 77 项 PRODUCT_COPY_FILES 零冲突；2924 项库/模块路径零错误 |
-| 源码检查 | Python 解析、受维护 shell 语法和 Git 差异空白检查通过；保持原厂文本的字节与许可声明 |
+迁移测试使用临时目录，检查恢复幂等性、未知输入/冲突保护、硬链接隔离及真实
+blob/helper 复现。未设置 `M2381_AOSP_ROOT` 会跳过真实 ELF 用例，不能将此称为
+完整通过。实际修补需上游提供的匹配 patchelf 与冻结 API33 输入。
 
-产品入口解析不等于 Android Soong 构建，更不等于 LOS 真机通过。本次未重新同步完整 PixelOS/LineageOS 源码、全量编译或刷机。LFS 文件只在本地准备，尚未上传托管服务器。
-
-## 此前已执行的隔离检查
-
-- 六项平台补丁：以当前 WSL 文件逆向重建已记录基线，在临时 Git 目录应用后，最终摘要全部一致；重复执行通过，未知源码版本被拒绝。以下记录反映补丁组为十项时的历史状态；现为六项，其余改由 `local_manifests` 承担。
-- 40 项厂商修正：从原始输入在隔离目录执行 25 项文本和 15 项二进制修正，最终摘要全部匹配；重复执行通过。
-- 内核还原：已知 B 槽输入恢复入口并移除 KernelPatch 追加数据，结果与已保存的第 47 组 boot 内核摘要一致；没有厂商原包摘要，未作官方原包身份认证。
-- 第 47 组 vendor-modprobe 派生脚本：原始摘要、插入记录和最终摘要一致。
-
-## 尚未完成
-
-完整源码 revision lock、去除 metadata 诊断启动依赖、SELinux enforcing、正式 recovery、OTA/双槽升级及完整硬件验收仍待完成。锁屏日期越界和充电上报异常仍未修复。当前真机证据来自 PixelOS 16.2，其他 ROM 状态见 [ROM 兼容性](rom-compatibility.md)。
+修改服务或资源后应实际构建相应目标，核对安装清单和最终镜像内文件，避免只测
+暂存目录。DT_NEEDED 符号集合及 `linker --list` 不能代替完整重定位、dlopen、
+服务启动和硬件检查。功能验证现状与未完成的场景见 [功能状态](status.md)。

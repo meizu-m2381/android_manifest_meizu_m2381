@@ -42867,12 +42867,6 @@
       "size": 129488,
       "kind": "original-before-fixup",
       "used_by": "vendor/meizu/m2381/proprietary/vendor/lib64/libvideooptfeature.so"
-    },
-    {
-      "path": "diagnostics/reference-round47/vendor-modprobe.round47.sh",
-      "sha256": "d59590eafec6c68723f6a96948781697b367dea3facb322ffcd3d6b2d86119bf",
-      "size": 2506,
-      "kind": "diagnostic-stock-derived-config"
     }
   ]
 }

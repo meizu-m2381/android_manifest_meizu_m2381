@@ -3,7 +3,7 @@
   "source": "local/Image.b or original workspace Image.b (not distributed)",
   "source_sha256": "6874d073b39f2b32b38b316d294356b3a2c37f1d6aada99ee0fffe34503c9e69",
   "source_kernelpatch_version": "0.12.0",
-  "restoration_tool": "diagnostics/tools/restore_kernelpatch_012.py",
+  "restoration_tool": "tools/restore_kernelpatch_012.py",
   "restored_sha256": "0f082b0fa6d21007a24b6a11976a08867be6612e65cfe1db29bbc08e2462648e",
   "restored_bytes": 46885376,
   "verified_candidate_boot_sha256": "3dd860b5abef9206de357609b4ce7922494bc8c8111503814c175d38ee5357ef",
@@ -11,5 +11,6 @@
   "device_tree_default_aligned_with_diagnostic_candidate": true,
   "source_backup_location": "local-only; original workspace backup preserved",
   "bundled_path": "device/meizu/m2381-kernel/Image",
-  "bundled_sha256": "0f082b0fa6d21007a24b6a11976a08867be6612e65cfe1db29bbc08e2462648e"
+  "bundled_sha256": "0f082b0fa6d21007a24b6a11976a08867be6612e65cfe1db29bbc08e2462648e",
+  "restoration_tool_sha256": "230991dd4254062206c302d6e7d36c603e40d17a9030d90bac639466a1553486"
 }
