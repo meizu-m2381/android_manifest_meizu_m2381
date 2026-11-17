@@ -36,11 +36,10 @@ python3 tools/check_local_inputs.py --root /path/to/android
 
 原始设备备份的 A/B 内核带有历史 KernelPatch 0.12.0。本项目按该版本的已知还原流程恢复 B 槽入口并移除追加内容，保留 `tools/restore_kernelpatch_012.py`、来源摘要及结果摘要；带 root 补丁的 A/B 原始备份留在原机主本地，不随仓库提供。`Image` 现已对齐还原副本，配套模块不变。没有厂商官方原始包摘要，不能把该过程描述为官方原包身份认证。见 `provenance/kernel-lineage.json`。
 
-## 外部输入工具
+## 更换输入
 
-`import_local_inputs.py` 仍可从完整且匹配的工作区或分区目录导入已知输入，适合恢复/核验；克隆完整 LFS 文件后不需要再导入。分区目录需提供 `vendor/...`、`odm/...` 等路径；内核、DTB、first-stage 模块和 37 项设备目录配置仍需单独准备。单一 vendor 转储不足以恢复全部输入。
-
-原继承自 M2468 的 extract-utils 指纹机器码修补不适用于本机，没有作为公开提取入口。生成的 vendor makefile 直接维护。要替换固件版本，先运行 `compare_firmware_inputs.py` 查看完整差异，再建立新输入清单、移植修正、验证 ABI 和硬件功能；不要覆盖当前固定基线后跳过摘要校验。
+vendor makefile 直接维护，不提供继承自其他机型的提取或规则生成入口。
+要替换固件版本，先运行 `compare_firmware_inputs.py` 查看完整差异，再建立新输入清单、移植修正、验证 ABI 和硬件功能；不要覆盖当前固定基线后跳过摘要校验。
 
 ## 自编译替代
 

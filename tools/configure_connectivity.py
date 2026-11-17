@@ -1,7 +1,6 @@
 """Remove imported Wi-Fi services which override the source-built AIDL stack.
 
-Keep the original extracted files locally; only remove their generated install
-rules. blob_exclude.txt applies the same ownership rules to future extraction.
+Keep the original extracted files; only remove their generated install rules.
 """
 
 import argparse

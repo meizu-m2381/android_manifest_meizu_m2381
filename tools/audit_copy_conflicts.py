@@ -95,18 +95,6 @@ def main():
         for m in missing_src:
             print('  缺:', m)
 
-    if '--write-exclude' in __import__('sys').argv:
-        out = 'tools/blob_exclude.txt'
-        # 保留已经排除的项目及注释，避免一次审计把历史修复重新启用。
-        existing = open(out, encoding='utf-8').read() if os.path.exists(out) else ''
-        known = {line.strip() for line in existing.splitlines()}
-        additions = sorted({real for _, real in dup} - known)
-        if additions:
-            with open(out, 'a', encoding='utf-8', newline='\n') as f:
-                f.write(('' if existing.endswith('\n') or not existing else '\n')
-                        + '\n'.join(additions) + '\n')
-        print('已追加排除清单:', out, len(additions), '条')
-
     raise SystemExit(bool(dup or missing_src))
 
 
