@@ -170,3 +170,10 @@ Make 在主机 PATH 工具中遇到 Go `newosproc` 线程创建失败；同一�
 
 
 诊断时两次用管道提前截断 `dumpsys media.camera` 输出，与两次 provider 的 SIGPIPE 退出时间对应；后续改为完整保存 dump。SIGPIPE 重启必须记入诊断影响，不能宣称 provider PID 始终不变，也不能与最初缺符号的反复 SIGSEGV 混为一谈。音频服务 PID 与启动后记录相同；后续相机实际采集仍须另外验证。
+
+
+解锁后的真机拍摄与音频采样已完成。Camera2 分别打开主摄、超广角、前摄，生成 4080×3060、4640×3480、3840×2160 JPEG；三张文件均完整解码。加入 640×480 预览并等待 AE 收敛后再拍，三个设备均报告 AE_CONVERGED。前摄照片有清楚室内细节。主摄和超广角样片拍到非常近的棕色平面，像素变化接近均匀，不能凭文件可解码就宣称其成像质量通过；需要无遮挡且有细节的正常场景再验焦点和图像。
+
+麦克风使用 AudioRecord 采到 96,000 个 PCM 样本，RMS 非零。AudioTrack 向系统 MEIZU 20 路由写入并播放了 48,000 帧 440Hz 测试音；硬件报告 playback head 到达末尾，但没有取得人的听觉确认，所以只证明播放数据路径。1280×720 主摄录像持续约 3.4 秒，MP4 含 93 个 AVC 视频样本和 159 个 AAC 音频样本；`c2.qti.avc.decoder` 成功解码 93 帧并收到 EOS。没有把容器含音轨误报成音频可听。
+
+用户尚未报告扬声器实听，也未确认调整后置镜头朝向正常场景。所有测试位于 boot ID `9ed2044b-1a57-40c5-984f-446d3fef0346`；测试后主相机 provider、audioserver、vendor audio service 仍使用原 PID，完整保存的相机服务 dump 未截断，检查没有测试挂载留在 PID 1。Wi-Fi 连接且 VALIDATED，电池显示 AC powered；未验证通话/移动数据、蓝牙耳机、指纹触摸认证、快充电流行为、休眠待机。相机测试应用和原始/缩略图像仅在本地 `.local-flash/platform-boot-20261117/camera-fix/`，不提交仓库。
