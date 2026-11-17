@@ -1,7 +1,7 @@
 # 兼容修补与迁移
 
-当前 Android 17 的兼容处理留在设备/vendor 配置和独立副本中，公共平台源码
-无需六项历史补丁。官方实现、原理和旧工作区迁移步骤见 [平台隔离](platform-isolation.md)。
+当前 Android 17 的兼容处理留在设备/vendor 配置和独立副本中，不包含平台源码补丁。
+官方实现、原理和兼容边界见 [平台隔离](platform-isolation.md)。
 
 ## 当前构建使用的修补
 
@@ -22,12 +22,3 @@ python3 /path/to/android/device/meizu/m2381/tools/configure_blob_compat.py --aos
 
 更换未知版本驱动需重新移植和验证，不能跳过摘要检查或按旧偏移强套指令。
 固定输入与原始副本见 [输入说明](local-inputs.md)，充电修补边界见 [充电适配](charging.md)。
-
-## 保留的旧平台补丁
-
-`patches/platform-17-series.json` 及其补丁保留给 `apply_platform_patches.py --restore`
-识别并撤销旧 checkout 的修改，`--require-unpatched` 检查恢复结果。
-恢复器先核验全部摘要，拒绝覆盖未知源码；Android 17 不允许重新 `--apply`。
-
-Android 16 的 `platform-series.json` 仅保留旧基线和迁移依据，未按当前方案重验，
-不属于当前受测构建流程。不要恢复旧的全局 HAL 排除、临时构建包装或占位头文件。

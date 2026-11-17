@@ -36,15 +36,14 @@ python3 "$port_root/tools/check_bundled_inputs.py" --root "$android_root"
 bash "$port_root/scripts/build-pixelos.sh" "$android_root" 12
 ```
 
-构建入口会核验充电兼容模块、固定输入、LFS、设备 ELF 兼容副本与未修补的
-平台源码，读取上游 release 后选择 `custom_m2381-<release>-userdebug`。
+构建入口会核验充电兼容模块、固定输入、LFS 与设备 ELF 兼容副本，
+读取上游 release 后选择 `custom_m2381-<release>-userdebug`。
 它还在 lunch 后导出 `TARGET_PREBUILT_KERNEL_HEADERS` 并确认 ARM64 设备配置。
 兼容输入缺失或与已知摘要不符时会停止；需要复现兼容副本时见
 [修补说明](patches.md)，不要绕过摘要检查。
 
-已有工作区曾应用平台补丁时，先提交或备份本地更改，再按
-[平台隔离](platform-isolation.md) 恢复已知补丁；当前 Android 17 不使用 `--apply`
-写入平台补丁。有限内存环境需按上游实际构建进程排查内存占用，单纯 export
+旧工作区需先保存本地更改，并对照上游撤销历史平台改动；也可在独立目录全新同步。
+`repo sync` 不会自动撤销本地提交。有限内存环境需按上游实际构建进程排查内存占用，单纯 export
 `GOMEMLIMIT` 不保证它能穿过构建器的 `env -i`。
 
 ## 版本记录与安装边界

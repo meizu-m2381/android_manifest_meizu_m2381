@@ -19,7 +19,7 @@ bash /path/to/android_manifest_meizu_m2381/scripts/build-pixelos.sh "$PWD" 12
 ```
 
 需要先安装上游要求的 Linux 构建依赖及 Git LFS，并下载完整 LFS 对象。
-构建脚本核验固定输入、兼容副本、平台源码和目标产品，再执行构建。
+构建脚本核验固定输入、兼容副本和目标产品，再执行构建。
 详细步骤见 [构建指南](docs/build.md)。
 
 ## 兼容方式
@@ -27,7 +27,7 @@ bash /path/to/android_manifest_meizu_m2381/scripts/build-pixelos.sh "$PWD" 12
 Android 17 使用官方 LineageOS shim、固定摘要的 ELF 依赖修补、设备 linker 配置
 与上游预编译内核头接口。HAL 源码选择只作用于 M2381 产品；local manifest
 保留上游项目，不要求修改公共 AOSP、Aperture 或冻结 VNDK 源码。
-旧平台补丁及恢复器用于迁移已有工作区，见 [平台隔离](docs/platform-isolation.md)。
+兼容范围与验证边界见 [平台隔离](docs/platform-isolation.md)。
 
 ## 文档
 

@@ -9,7 +9,6 @@ python3 "$repo_dir/tools/configure_pd_icl.py" --root "$aosp_dir"
 python3 "$repo_dir/tools/check_local_inputs.py" --root "$aosp_dir"
 python3 "$repo_dir/tools/check_source_lfs.py" --root "$aosp_dir"
 python3 "$aosp_dir/device/meizu/m2381/tools/configure_blob_compat.py" --aosp "$aosp_dir"
-python3 "$repo_dir/tools/apply_platform_patches.py" --aosp "$aosp_dir" --require-unpatched
 cd "$aosp_dir"
 source build/envsetup.sh
 target_release=$(sed -n 's/^aosp_target_release=//p' vendor/lineage/vars/aosp_target_release)

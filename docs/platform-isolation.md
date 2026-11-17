@@ -1,6 +1,6 @@
 # Android 17 设备适配与平台隔离
 
-当前迁移将 M2381 的兼容处理留在设备/vendor 仓库，不再要求六项 Android 17 平台补丁。历史补丁保留用于识别和撤销已有工作区；不能再用 `--apply` 重新应用 Android 17 补丁。
+M2381 的兼容处理位于设备/vendor 配置和独立二进制副本中，不修改公共 AOSP、冻结 VNDK 或 ROM 相机应用源码。
 
 ## 上游依据
 
@@ -21,31 +21,13 @@
 
 `device/meizu/m2381/configs/compat/libbase-fixups.json` 固定 14 个实际打包的原厂 ELF 的原始摘要、修补摘要和旧符号。`tools/configure_blob_compat.py` 使用随源码提供的 `patchelf-0_17_2` 生成 `vendor/meizu/m2381/compat/vendor/...`，只切换对应安装规则。原始 `proprietary/` 不改写。工具先检查全组输入和已有输出；未知输入、输出冲突或规则重叠均停止。已记录摘要的旧兼容副本可以用 `--apply` 升级，检查模式拒绝未升级副本。32/64 位官方 libbase shim 和 32 位官方 vendor libui shim 由设备产品显式选择。
 
-原 VNDK33 LLNDK 清单补丁源于源码构建的 **vendor libbinder** 依赖当前系统 `libapexsupport.so`。当前 VNDK33 快照中的 libbinder 不含该依赖。设备改用 `PRODUCT_VENDOR_LINKER_CONFIG_FRAGMENTS` 的 `requireLibs`，不修改冻结的 VNDK33 清单；需校验最终 linker 配置与依赖可达性。
+源码构建的 vendor libbinder 依赖系统 `libapexsupport.so`。设备用 `PRODUCT_VENDOR_LINKER_CONFIG_FRAGMENTS` 的 `requireLibs` 配置 linker 可达性，不修改冻结的 VNDK33 清单。
 
 `PRODUCT_SOURCE_ROOT_DIRS` 的负路径只在 M2381 产品中排除 stock HAL 对应的 Soong 定义。local manifest 不再移除 CAF display、audio、STHAL、IPA 项目，其他产品可以在同一 checkout 中使用这些源码。`core-utils-vendor/fwk-detect` 同样仅在本产品中排除，以保留原厂库及 CneApp 链接。它不是对其他设备构建成功的替代验证。
 
 恢复完整源码项目后，Make 暴露了设备自定义 RFS 软链接与 `hardware/qcom-caf/common` 的 24 处重复安装定义。现改为引用上游同路径、同目标的模块，不再重复声明。
 
 内核仓的 `kernel-headers.tar.gz` 是有限的编译兼容输入，包含已有 `msm_audio.h` 和上游清理工具要求的三个通用头。可用 `tools/package_build_headers.py --aosp AOSP_ROOT` 复现。它不是完整的原厂 UAPI，不能据此启用源码 QTI 音频/显示 HAL。上游头依赖选择器读取 shell 环境，因此构建入口在 lunch 后从实际 BoardConfig 导出该变量。
-
-## 从旧工作区迁移
-
-先审阅和提交已有更改，保存可回退点；不要混入临时镜像或日志。同步三个 split 仓库与本 manifest 工具仓后：
-
-```bash
-android_root=/path/to/android
-port_root=/path/to/android_manifest_meizu_m2381
-cp "$port_root"/local_manifests/*.xml "$android_root/.repo/local_manifests/"
-cd "$android_root"
-repo sync -c -j4 --no-clone-bundle --no-tags
-python3 "$port_root/tools/apply_platform_patches.py" --aosp "$android_root" --restore
-python3 device/meizu/m2381/tools/configure_blob_compat.py --aosp "$android_root" --apply
-python3 "$port_root/tools/apply_platform_patches.py" --aosp "$android_root" --require-unpatched
-bash "$port_root/scripts/build-pixelos.sh" "$android_root" 12
-```
-
-新同步的已打包 vendor 仓库包含兼容副本，`--apply` 可重复执行。恢复器仅识别记录的 before/after 摘要；其他本地改动必须人工审阅，不能强制覆盖。它恢复文件内容，不删除历史提交。
 
 手动构建也需使用上游头选择接口；变量只传给这次构建，避免切换其他产品后残留设备头路径：
 
@@ -76,8 +58,7 @@ TARGET_PREBUILT_KERNEL_HEADERS="$(get_build_var TARGET_PREBUILT_KERNEL_HEADERS)"
 
 ## 验证边界
 
-迁移及失败保护回归包含 9 项，覆盖已知补丁恢复、硬链接保护、兼容副本升级、
-未知输入拒绝与 helper 复现。实际构建和真机加载已验证上述兼容依赖；
+兼容回归覆盖兼容副本升级、未知输入拒绝与 helper 复现。实际构建和真机加载已验证上述兼容依赖；
 修复后的定向镜像已启动，并完成三摄拍照、音视频采集和硬件解码检查。
 这次镜像验证使用安装目录重打包，不能代替全新同步后的完整源码构建或通用 OTA 验证。
 

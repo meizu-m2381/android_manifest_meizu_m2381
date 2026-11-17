@@ -8,7 +8,7 @@
 - 参考树记载的更早来源：<https://cnb.cool/AstralSpun/android_device_meizu_m2468>，提交 `b82127689b3f7aa7a09c51b3af8b8a3140eeaa17`。
 - 历史 PixelOS 16 基线：<https://github.com/PixelOS-AOSP/android_manifest>，`sixteen-qpr2`，manifest 提交 `e37ff60b6e27a3c51f3c6ab01a42473bec7aa2a2`。
 - 当前 PixelOS 17 基线：<https://github.com/PixelOS-AOSP/android_manifest>，`seventeen`，manifest 提交 `29f6010bcd2bd4742502ea7ccee763c64f02a3c1`。
-- 平台补丁涉及 Android Open Source Project、LineageOS 与 PixelOS；文件头和补丁上下文中的版权声明保持原样。
+- 设备适配参考 Android Open Source Project、LineageOS 与 PixelOS；保留文件中的原版权声明。
 - 历史 KernelPatch 还原工具参考 bmax121/KernelPatch `0.12.0`，提交 `57d487090add7e25e98cfb8d569d999c14f30352`；本仓库不包含 KernelPatch 二进制。
 
 `provenance/upstream-device-reference.json` 是参考树自身的元数据：其中 m2468 指纹/相机模块的编译或运行结论不代表 M2381 经过同样验证。M2381 当前仍使用原厂内核和模块。

@@ -1,7 +1,0 @@
---- a/prebuilts/vndk/v33/arm64/configs/llndk.libraries.txt
-+++ b/prebuilts/vndk/v33/arm64/configs/llndk.libraries.txt
-@@ -1,3 +1,4 @@
-+libapexsupport.so
- libEGL.so
- libGLESv1_CM.so
- libGLESv2.so
