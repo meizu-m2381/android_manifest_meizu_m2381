@@ -180,3 +180,16 @@ Make 在主机 PATH 工具中遇到 Go `newosproc` 线程创建失败；同一�
 
 
 后续在用户摆正手机、露出镜头并朝向有细节的明亮场景后复拍：主摄 4080×3060、超广角 4640×3480、前摄 3840×2160 三张 JPEG 均完整解码，三者预览 AE 均收敛。两张后摄样片可辨认桌面物品与包装文字等场景细节，后置成像质量的此前疑点解除。该复拍没有触发重启，仍是同一个 boot ID。用户没有注意到先前测试音，因此扬声器的实际听感仍未确认。
+
+
+## 2026-11-17 Aperture 60 帧录像设备配置
+
+当前 HAL 在标准 `CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES` 中只公布至 30 fps，但魅族私有视频能力表含 60 fps。Aperture 从 CameraX 标准帧率集合生成界面，因此默认只显示到 30。采用上游已有 `config_additionalVideoConfigurations` 数组，在本设备 overlay 中为 ID 0/1/3 的 hd/fhd/uhd 增加 60，不修改公共 AOSP、Aperture、CameraX 或冻结 VNDK 源码；深度相机 2、逻辑相机 4 继续隐藏，未添加 120/240 fps。
+
+使用 Camera2 普通录像会话、MediaRecorder 与真实麦克风，对三摄×720p/1080p/4K 九组明确请求 `[60,60]`，每组录制约 4 秒。逐帧检查传感器时间戳和 MP4 视频样本时间戳，避免只验证容器帧率标签。全部输出有效视频：720p/1080p 约 59–60 fps，4K 约 58 fps；传感器中位间隔约 16.66–16.67 ms。4K 在本次短测中有少量丢帧，不能称持续恒定 60 fps，也未做热稳定长录像。
+
+真实 `ApertureOverlayM2381` 目标构建退出 0；只更新设备资源输入，依赖的 host 工具和 framework-res 由标准图重建。打包时发现旧的独立 product 镜像规则未跟踪暂存 APK 变化，已强制重建，随后从最终 EROFS 提取 overlay，确认 SHA256 与新安装产物相同。AVB 子签名和完整父子链验证通过。静态 overlay 不能 adb install 更新，临时动态 overlay 方案被自动审批拒绝，因此最终使用产品镜像刷入验证，未用临时覆盖冒充持久生效。
+
+保留原备份和既有 vendor 修复，只定向刷 B 槽 product，并更新 vbmeta_system，父 vbmeta 因子链公钥未变而字节相同。按 super extent 回读 product 匹配；未擦除用户数据，metadata 诊断配置保持原摘要。启动完成后核对 25 个关键输入、五个启动/AVB 分区、两种架构 system libbase 和新 overlay 均匹配。`cmd overlay lookup` 确认 Aperture 实际解析到三组 `hd|fhd|uhd/60`；应用界面和应用实际录像待用户本次重启解锁后继续，不能用 Camera2 探针通过代替 Aperture 实录。
+
+九组实录、传感器时间戳、视频样本统计、构建产物、原 overlay 备份与刷入回读证据仅保存在本地 `.local-flash/platform-boot-20261117/fps-fix/`。旧 `dpmd` 和 `slim_daemon` 缺符号未在这项配置修复中处理。
