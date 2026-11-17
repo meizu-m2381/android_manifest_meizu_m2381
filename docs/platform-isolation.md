@@ -190,6 +190,6 @@ Make 在主机 PATH 工具中遇到 Go `newosproc` 线程创建失败；同一�
 
 真实 `ApertureOverlayM2381` 目标构建退出 0；只更新设备资源输入，依赖的 host 工具和 framework-res 由标准图重建。打包时发现旧的独立 product 镜像规则未跟踪暂存 APK 变化，已强制重建，随后从最终 EROFS 提取 overlay，确认 SHA256 与新安装产物相同。AVB 子签名和完整父子链验证通过。静态 overlay 不能 adb install 更新，临时动态 overlay 方案被自动审批拒绝，因此最终使用产品镜像刷入验证，未用临时覆盖冒充持久生效。
 
-保留原备份和既有 vendor 修复，只定向刷 B 槽 product，并更新 vbmeta_system，父 vbmeta 因子链公钥未变而字节相同。按 super extent 回读 product 匹配；未擦除用户数据，metadata 诊断配置保持原摘要。启动完成后核对 25 个关键输入、五个启动/AVB 分区、两种架构 system libbase 和新 overlay 均匹配。`cmd overlay lookup` 确认 Aperture 实际解析到三组 `hd|fhd|uhd/60`；应用界面和应用实际录像待用户本次重启解锁后继续，不能用 Camera2 探针通过代替 Aperture 实录。
+保留原备份和既有 vendor 修复，只定向刷 B 槽 product，并更新 vbmeta_system，父 vbmeta 因子链公钥未变而字节相同。按 super extent 回读 product 匹配；未擦除用户数据，metadata 诊断配置保持原摘要。启动完成后核对 25 个关键输入、五个启动/AVB 分区、两种架构 system libbase 和新 overlay 均匹配。`cmd overlay lookup` 确认 Aperture 实际解析到三组 `hd|fhd|uhd/60`；用户在本次重启解锁后自行检查相机应用，确认 60 FPS 档位已出现。九组录像和帧率统计来自 Camera2 探针，尚未采集 Aperture 自身录像的逐帧统计，不能将两者混为同一验证。
 
 九组实录、传感器时间戳、视频样本统计、构建产物、原 overlay 备份与刷入回读证据仅保存在本地 `.local-flash/platform-boot-20261117/fps-fix/`。旧 `dpmd` 和 `slim_daemon` 缺符号未在这项配置修复中处理。
