@@ -42867,6 +42867,132 @@
       "size": 129488,
       "kind": "original-before-fixup",
       "used_by": "vendor/meizu/m2381/proprietary/vendor/lib64/libvideooptfeature.so"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/etc/permissions/qcrilhook.xml",
+      "kind": "vendor-input",
+      "size": 234,
+      "sha256": "30f2d18283025a215e823cd286a89673280077791d22ce5ccabcbb5a6e71bf5f",
+      "partition_path": "system_ext/etc/permissions/qcrilhook.xml"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/etc/permissions/telephony_system-ext_privapp-permissions-qti.xml",
+      "kind": "vendor-input",
+      "size": 3460,
+      "sha256": "7f5f554b4115201eb47d08fd313eac1b449ec1c4481ab71a549263c9ae98547e",
+      "partition_path": "system_ext/etc/permissions/telephony_system-ext_privapp-permissions-qti.xml"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/framework/qcrilhook.jar",
+      "kind": "vendor-input",
+      "size": 106414,
+      "sha256": "389327309315f981a51dcc1e379491826f13a9676ea7d188cc73dd32a4ec6af1",
+      "partition_path": "system_ext/framework/qcrilhook.jar"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/lib64/lib-imsvideocodec.so",
+      "kind": "vendor-input",
+      "size": 158952,
+      "sha256": "ea2ac4bdaed0aa8170aceb3250e788937e127d7a1a8578bc38191d48f373a473",
+      "partition_path": "system_ext/lib64/lib-imsvideocodec.so"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/lib64/lib-imsvt.so",
+      "kind": "vendor-input",
+      "size": 380408,
+      "sha256": "44dbdad6dfa1af089222572fe0793fdc104e42d920101a464c453f178e66af2c",
+      "partition_path": "system_ext/lib64/lib-imsvt.so"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/lib64/lib-imsvtextutils.so",
+      "kind": "vendor-input",
+      "size": 18688,
+      "sha256": "f3f110a07c71037d92f6bfbf334ee71d059c59295d8ac46907d61b5d9d632e4e",
+      "partition_path": "system_ext/lib64/lib-imsvtextutils.so"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/lib64/lib-imsvtutils.so",
+      "kind": "vendor-input",
+      "size": 39848,
+      "sha256": "4cd57975be6c6b42b875b8823305566b8e200002340ff097b1cc0b2e0ddae91d",
+      "partition_path": "system_ext/lib64/lib-imsvtutils.so"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/lib64/libdiag_system.so",
+      "kind": "vendor-input",
+      "size": 355936,
+      "sha256": "af2279fdc226ef3a36605d45524a081704f86d0a3be9f1b5d2faed11ea1bb924",
+      "partition_path": "system_ext/lib64/libdiag_system.so"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/lib64/libimscamera_jni.so",
+      "kind": "vendor-input",
+      "size": 27912,
+      "sha256": "1aa9379217ea95bcb49d9b6d9fdf4f2c52a7456e6360029651aac912865b1cc5",
+      "partition_path": "system_ext/lib64/libimscamera_jni.so"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/lib64/libimsmedia_jni.so",
+      "kind": "vendor-input",
+      "size": 50008,
+      "sha256": "d3a6c02bb9a375dbe4a8aa3627192f5268dc1a69509b28b21b703038cf5120cd",
+      "partition_path": "system_ext/lib64/libimsmedia_jni.so"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/lib64/vendor.qti.ImsRtpService-V2-ndk.so",
+      "kind": "vendor-input",
+      "size": 131584,
+      "sha256": "a938b8cb94ecb6b3962eb1c48e5d864a3d421e1f68c7885d4da40fd4f7d24d36",
+      "partition_path": "system_ext/lib64/vendor.qti.ImsRtpService-V2-ndk.so"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/lib64/vendor.qti.imsrtpservice@3.0.so",
+      "kind": "vendor-input",
+      "size": 265272,
+      "sha256": "4ea261940d7561e2925c90988a036282fe5678f6815fd19f34b63a412c9393f2",
+      "partition_path": "system_ext/lib64/vendor.qti.imsrtpservice@3.0.so"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/lib64/vendor.qti.imsrtpservice@3.1.so",
+      "kind": "vendor-input",
+      "size": 223824,
+      "sha256": "e9056929300a833834250a3537df1a82947f8dc1ef5ddb1c5c0b2f9f5441641b",
+      "partition_path": "system_ext/lib64/vendor.qti.imsrtpservice@3.1.so"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/priv-app/ims/ims.apk",
+      "kind": "vendor-input",
+      "size": 1590539,
+      "sha256": "9f5e50816157c7a953926d734e468e309223eb46aac0d43263fe5c4aee3a1c8d",
+      "partition_path": "system_ext/priv-app/ims/ims.apk"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/priv-app/qcrilmsgtunnel/qcrilmsgtunnel.apk",
+      "kind": "vendor-input",
+      "size": 90526,
+      "sha256": "204d437df1d0ac0ddb0a513144925f4b8beff296576b560d9e64b417cd709398",
+      "partition_path": "system_ext/priv-app/qcrilmsgtunnel/qcrilmsgtunnel.apk"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/lib64/vendor.qti.diaghal@1.0.so",
+      "kind": "vendor-input",
+      "size": 161296,
+      "sha256": "e380131510794e8d21edddfd7d6d22238d484c8d25add3e1e450af9b7bb2246d",
+      "partition_path": "system_ext/lib64/vendor.qti.diaghal@1.0.so"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/lib64/vendor.qti.diaghal-V1-ndk.so",
+      "kind": "vendor-input",
+      "size": 65328,
+      "sha256": "5cc9542a64d29d53fe567e2b9a1eeb369a2c2f26af791347f6f233807ebb6bb0",
+      "partition_path": "system/lib64/vendor.qti.diaghal-V1-ndk.so"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/app/QtiTelephonyService/QtiTelephonyService.apk",
+      "kind": "vendor-input",
+      "size": 61854,
+      "sha256": "81fd6b30379e03c5b99647da47411db2ac1fa113cce03863723afc49fdc8a64f",
+      "partition_path": "system_ext/app/QtiTelephonyService/QtiTelephonyService.apk"
     }
   ]
 }
