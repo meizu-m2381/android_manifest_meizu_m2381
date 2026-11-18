@@ -9,6 +9,8 @@
 | --- | --- | --- |
 | 旧 libbase 与 32 位媒体 ABI | 设备 `configs/compat/`、`tools/configure_blob_compat.py`、`tools/prepare_media_helper.py` | 固定摘要，生成独立 vendor 兼容副本 |
 | DPM 旧 HIDL ABI | 同一固定摘要修补清单，官方 `libhidlbase_shim` | 64 位 `vendor.libdpmframework.so` 兼容副本 |
+| QCRIL 短信开机优化 | 固定摘要兼容工具与官方 419259/418511 | 两项 64 位库副本等长改名，原始输入与数据库不变 |
+| 原厂 IMS/RCS 组件 | vendor 的 `ims-stack.mk`、`rcs-stack.mk` | 同机 APK/Java HAL 库及当前 platform 签名；RCS 仍有开通限制 |
 | 默认选网与 NR 信号刻度 | 设备 vendor 属性与 CarrierConfig RRO | 双卡默认自动模式、受测联通卡的 NR 刻度 |
 | PD 枚举限流兼容 | `tools/configure_pd_icl.py`、`provenance/charging-pd-icl.json` | 已知版本充电模块的独立副本 |
 | tinyxml2 ABI | `tools/apply_tinyxml2_vendor_fixups.py`、`tools/verify_tinyxml2_vendor.py` | 已记录版本的 vendor 库 |

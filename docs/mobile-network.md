@@ -103,6 +103,68 @@ HAL，语音会话转为激活。用户实际拨号确认双方声音正常，�
 进行 HTTP 请求获得响应，ICMP 三发三收；NR SS-RSRP 为 `-86 dBm` 时为 4 格。
 崩溃缓冲区未见 CNE/IMS 新异常，已知 `slim_daemon` 链接错误仍单独待处理。
 
+## 普通短信接收与开机优化
+
+出现“能发、不能收”时，IMS 短信发送回执为成功，但 `GsmInboundSmsHandler`
+始终只有启动记录；多次获取验证码、开关飞行模式均未出现 MT SMS 回调。
+手机的 `qcrilNr.db` 中 `persist.vendor.radio.poweron_opt` 默认值为 `1`，
+不能仅凭 `getprop` 没有输出就判断此优化未启用。
+
+LineageOS 官方同平台 Motorola [419259](https://review.lineageos.org/c/LineageOS/android_device_motorola_sm8550-common/+/419259)
+及 Sony [418511](https://review.lineageos.org/c/LineageOS/android_device_sony_sm8550-common/+/418511)
+明确记录该开机优化会破坏短信接收。本设备使用相同的修补：仅在 64 位
+`libqcrilNr.so` 和 `libril-db.so` 的独立兼容副本中，将属性名等长替换为
+`persist.vendor.radio.poweron_ign`，从而使用默认关闭状态。原始库、数据库和
+AOSP 电话框架均不改写，也不额外引入旧平台的 ACK 超时参数。
+
+固定输入/输出 SHA-256、替换次数和安装规则由设备兼容工具校验。补丁生成后，
+重启 QCRIL 即观察到积压短信经 `onIncomingSms`、`onSmsReceived` 进入系统，
+返回成功 ACK，并完成 Google 信息的 `SMS_DELIVER` / `SMS_RECEIVED` 广播。
+后续只读查询可见 6 条已标记处理完成的 raw 记录；这不是未读条数，也不能证明
+所有短信都已补回。运营商仍保存且有效期未到的短信通常会重投，验证码可能已过期。
+
+最终诊断入口在 `zygote-start` 阶段挂载两份兼容库，早于该启动链上的 QCRIL
+启动。曾试用的 `post-fs-data` 阶段执行退出 127、未完成挂载，已撤换；最终整机
+重启后摘要及 QCRIL 进程映射均匹配修补版本，IMS 与蜂窝数据重新注册成功。
+两项库安装目标已构建通过，6 项真实 ELF/失败保护回归均通过、无跳过。
+普通短信发送使用修补前的实际成功回执作为证据，本轮未代用户发送新短信。
+
+## RCS 接入与尚未解决的限制
+
+本机使用联通 `46001`。Google 信息在修补前明确报告
+`UNSUPPORTED_BY_CARRIER`，但这不能证明联通完全没有 RCS 服务：
+[Apple 官方亚太运营商列表](https://support.apple.com/en-us/109510)列明中国联通
+支持 RCS；该列表也不能证明 Google 信息与同一运营商的接入已受支持。
+
+设备原有 RRO 指向 `vendor.qti.imsrcs`，产品却没有安装该包。按照官方
+[353597](https://review.lineageos.org/c/LineageOS/android_device_fairphone_FP4/+/353597)
+的设备侧接入方式，补入本机原厂 `ImsRcsService.apk`、其共享库权限 XML 和
+XML 声明的 14 个 Java HAL JAR，共 16 项固定原始输入。APK 用本系统 platform
+证书签名，DEX 保持原样；不加入其他机型 APK，不替换现有 MMTEL 栈。
+现有 `persist.vendor.rcs.singlereg.feature=1` 和原厂 IMS factory 2.2 HAL 保留。
+
+重启后包管理器识别该包，RCS 服务与电话框架绑定成功，双卡槽 RCS feature
+回调就绪，HIDL 配置接口返回 `OK`。新增组件的安装目标已通过构建，APK 的
+签名/DEX、全部运行文件摘要均已检查；5452 项构建输入和 5492 项随附输入
+核验均为 0 errors。
+
+RCS 尚未完成修复和开通验收：原厂 IMS factory 对单注册 SIP transport 的
+1.2/1.1/1.0 接口均返回 `NOT_SUPPORTED`，在 IMS 注册后重启 RCS 进程仍然如此；
+当前联通 CarrierConfig 也不要求单注册。临时试验的
+`android.hardware.telephony.ims.singlereg` 功能声明已撤回，避免把缺失的实际
+能力声明为已支持；未强制修改运营商开通状态、未伪造服务器配置。
+
+最终手机处于重启后 `RUNNING_LOCKED` 状态，Google 信息的凭据加密数据尚未
+解锁。需要首次解锁后重新检查其 RCS 状态、实际开通配置和运营商接入方式，
+才能区分客户端接入限制与基带配置问题；目前没有 RCS 注册或消息收发成功证据。
+本轮没有重做人工双向通话，已有音频验收仍来自上一轮用户测试。
+
+回退短信诊断挂载可恢复本轮部署前的 `init.round48.before-sms.rc` 并重启；
+它保留先前数据/通话修复。回退新增 RCS 时还需恢复该轮保存的电话挂载脚本
+`apply-call-before-rcs.sh`，并移除本轮新增的 16 项 RCS 部署文件后重启。
+对应脚本、摘要和日志保存在工作区忽略的 `.local-flash/sms-receive-20261119/`。
+没有刷写分区，正式镜像与 OTA 安装仍需独立验收。
+
 ## 验证边界
 
 已在本机恢复联通 NR SA 注册和数据连接。关闭 Wi-Fi 后网页返回 HTTP 204/200；
@@ -133,6 +195,6 @@ DPM 兼容副本和官方 shim 的 SHA-256 均与受测文件一致，镜像内�
 的 vbmeta 算法为 `NONE`，此结果不代表签名信任链通过。该镜像未刷入手机，
 本次也未执行全量干净构建或正式 OTA 验收。
 
-双卡、其他运营商、实际短信、主动视频通话、VoLTE/VoNR 切换、跨小区移动和
+双卡、其他运营商、短信长期收发与 RCS、主动视频通话、VoLTE/VoNR 切换、跨小区移动和
 长时间稳定性需要独立验收。默认网络属性只为未保存用户配置的订阅提供初值，不强制重写用户
 后续选择。

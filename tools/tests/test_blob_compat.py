@@ -106,6 +106,25 @@ class BlobTest(unittest.TestCase):
         self.assertEqual(output.read_bytes(), b'existing user output')
         self.assertEqual((self.vendor / 'Android.mk').read_bytes(), original_rules)
 
+    def test_invalid_binary_fixup_preserves_all_outputs_and_rules(self):
+        device = self.root / 'device'
+        config = device / 'configs/compat/libbase-fixups.json'
+        config.parent.mkdir(parents=True)
+        rules = (self.vendor / 'Android.mk').read_bytes()
+        for invalid in ['count', 'length']:
+            manifest = json.loads(json.dumps(self.manifest))
+            entry = next(e for e in manifest['files'] if e.get('binary_replacements'))
+            replacement = entry['binary_replacements'][0]
+            if invalid == 'count':
+                replacement['count'] += 1
+            else:
+                replacement['after'] += 'x'
+            config.write_text(json.dumps(manifest))
+            with self.assertRaises(ValueError):
+                self.compat.configure(self.aosp, device, self.vendor, True)
+            self.assertFalse((self.vendor / 'compat').exists())
+            self.assertEqual((self.vendor / 'Android.mk').read_bytes(), rules)
+
 
 if __name__ == '__main__':
     unittest.main()

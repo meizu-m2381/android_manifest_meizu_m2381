@@ -42993,6 +42993,118 @@
       "size": 61854,
       "sha256": "81fd6b30379e03c5b99647da47411db2ac1fa113cce03863723afc49fdc8a64f",
       "partition_path": "system_ext/app/QtiTelephonyService/QtiTelephonyService.apk"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/app/ImsRcsService/ImsRcsService.apk",
+      "kind": "vendor-input",
+      "size": 430494,
+      "sha256": "8edbdf6f8bf61fe95ffe836fbd5219e93ed727af95e960647b2eae0295c46a4b",
+      "partition_path": "system_ext/app/ImsRcsService/ImsRcsService.apk"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/etc/permissions/vendor.qti.ims.rcsservice.xml",
+      "kind": "vendor-input",
+      "size": 2192,
+      "sha256": "5872de69f4ca9fde586564af5b5c22dd85e8655f3e0ece22a1c28bb5f2245c92",
+      "partition_path": "system_ext/etc/permissions/vendor.qti.ims.rcsservice.xml"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/framework/vendor.qti.ims.factory-V2.0-java.jar",
+      "kind": "vendor-input",
+      "size": 188122,
+      "sha256": "a80394b26397145209738d1432ae6e64d21cbe470a219556b79afef06a48f4b0",
+      "partition_path": "system_ext/framework/vendor.qti.ims.factory-V2.0-java.jar"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/framework/vendor.qti.ims.connection-V1.0-java.jar",
+      "kind": "vendor-input",
+      "size": 30754,
+      "sha256": "1e92c48414e356089669b2ee2e6df0bb35d2d519388c023dff37a3dc1590c093",
+      "partition_path": "system_ext/framework/vendor.qti.ims.connection-V1.0-java.jar"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/framework/vendor.qti.ims.rcsuce-V1.0-java.jar",
+      "kind": "vendor-input",
+      "size": 47202,
+      "sha256": "0338e5845c14f78899f299471a1cb7efbeab5c9f37aa1b5fc165b15cad893ec9",
+      "partition_path": "system_ext/framework/vendor.qti.ims.rcsuce-V1.0-java.jar"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/framework/vendor.qti.ims.rcssip-V1.0-java.jar",
+      "kind": "vendor-input",
+      "size": 65666,
+      "sha256": "145cff6dc74bf97201b926c9771124463132abf9d3d6331365b42409606f23e8",
+      "partition_path": "system_ext/framework/vendor.qti.ims.rcssip-V1.0-java.jar"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/framework/vendor.qti.ims.factory-V2.1-java.jar",
+      "kind": "vendor-input",
+      "size": 258298,
+      "sha256": "ddea634dca885b910cb9f87f9a4c3b1151459574bf93d04b4bcc8f6ae9614683",
+      "partition_path": "system_ext/framework/vendor.qti.ims.factory-V2.1-java.jar"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/framework/vendor.qti.ims.rcsuce-V1.1-java.jar",
+      "kind": "vendor-input",
+      "size": 61066,
+      "sha256": "fc286616dd2c2a8439c428352079a6f996aede3254610690ad23b20f745f8933",
+      "partition_path": "system_ext/framework/vendor.qti.ims.rcsuce-V1.1-java.jar"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/framework/vendor.qti.ims.rcssip-V1.1-java.jar",
+      "kind": "vendor-input",
+      "size": 89066,
+      "sha256": "9953f3c0cfceff6dca4bf93b4621a40fe97a3d8eed7dcbbb6c57e6c40d477370",
+      "partition_path": "system_ext/framework/vendor.qti.ims.rcssip-V1.1-java.jar"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/framework/vendor.qti.ims.factory-V2.2-java.jar",
+      "kind": "vendor-input",
+      "size": 308206,
+      "sha256": "4f6a091e42052bcccacd128da08b273068648ff12c93a289e3626c562354530d",
+      "partition_path": "system_ext/framework/vendor.qti.ims.factory-V2.2-java.jar"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/framework/vendor.qti.ims.rcsuce-V1.2-java.jar",
+      "kind": "vendor-input",
+      "size": 73522,
+      "sha256": "9f658490e46e890cd4d7c7df947eb43f97b90c42fcdb567ee71a813c9df8cb26",
+      "partition_path": "system_ext/framework/vendor.qti.ims.rcsuce-V1.2-java.jar"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/framework/vendor.qti.ims.rcssip-V1.2-java.jar",
+      "kind": "vendor-input",
+      "size": 114526,
+      "sha256": "3c79dfe63b851d5cd0d23fbba58cdef3105214a5ef2856121fb77c7a482c33bd",
+      "partition_path": "system_ext/framework/vendor.qti.ims.rcssip-V1.2-java.jar"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/framework/vendor.qti.ims.factoryaidlservice-V1-java.jar",
+      "kind": "vendor-input",
+      "size": 128602,
+      "sha256": "acd44c4ab98453d7559b150a90554c9bbfdee2bcceb62fa33fcc9320bcf2d7d5",
+      "partition_path": "system_ext/framework/vendor.qti.ims.factoryaidlservice-V1-java.jar"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/framework/vendor.qti.ims.rcssipaidlservice-V1-java.jar",
+      "kind": "vendor-input",
+      "size": 43782,
+      "sha256": "1f84fb44577caaa1f308527c6c9735f03c5c880c5f9f37141a18753eeb8b0bf7",
+      "partition_path": "system_ext/framework/vendor.qti.ims.rcssipaidlservice-V1-java.jar"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/framework/vendor.qti.ims.rcsuceaidlservice-V1-java.jar",
+      "kind": "vendor-input",
+      "size": 27114,
+      "sha256": "f24e02f507fa6474821603d400cc80b0f865abdb7602c52a3c83c0f492ec1732",
+      "partition_path": "system_ext/framework/vendor.qti.ims.rcsuceaidlservice-V1-java.jar"
+    },
+    {
+      "path": "vendor/meizu/m2381/proprietary/system_ext/framework/vendor.qti.ims.connectionaidlservice-V1-java.jar",
+      "kind": "vendor-input",
+      "size": 13990,
+      "sha256": "65bf4438af111c3662fd733146519918be84e81fda089371a9592475b99be71a",
+      "partition_path": "system_ext/framework/vendor.qti.ims.connectionaidlservice-V1-java.jar"
     }
   ]
 }

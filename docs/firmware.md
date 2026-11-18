@@ -28,7 +28,7 @@
 python3 tools/compare_firmware_inputs.py   --source /path/to/extracted-partitions   --report local/firmware-comparison.json
 ```
 
-工具汇总所有 5057 项 vendor 输入（含 system_ext IMS 栈和电话音频桥），区分已修补版本、已知修补前版本、不同版本和缺失项，不在第一个不同文件处停止，也不会导入或改写文件。未知或缺失项以非零状态退出。这是差异清单，不是兼容性认证。
+工具汇总所有 5073 项 vendor 输入（含 system_ext IMS/RCS 栈和电话音频桥），区分已修补版本、已知修补前版本、不同版本和缺失项，不在第一个不同文件处停止，也不会导入或改写文件。未知或缺失项以非零状态退出。这是差异清单，不是兼容性认证。
 
 更换版本需单独建立清单/分支：配套使用内核、DTB、339 个模块及用户态驱动；重新核对 ELF 依赖、VINTF、启动配置和图形指令修补；完成编译和真机回归后才标为支持。不允许将已知版本的 EGL/Vulkan 指令偏移强套到未知 `.so`。不同版本可能最终兼容，但不能仅凭文件名相同保证。
 

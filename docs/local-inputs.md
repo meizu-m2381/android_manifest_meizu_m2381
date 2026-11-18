@@ -4,11 +4,11 @@
 
 ## 清单
 
-`provenance/local-inputs.json` 是当前构建使用的 5436 项输入：
+`provenance/local-inputs.json` 是当前构建使用的 5452 项输入：
 
 | 类别 | 数量 | 内容 |
 | --- | ---: | --- |
-| `vendor-input` | 5057 | vendor/odm/dlkm、system_ext IMS/电话音频桥预编译输入及两项 SELinux 输入 |
+| `vendor-input` | 5073 | vendor/odm/dlkm、system_ext IMS/RCS/电话音频桥预编译输入及两项 SELinux 输入 |
 | `stock-kernel-input` | 342 | 已还原内核 Image、两个 DTB 输入、339 个 `.ko` |
 | `restricted-stock-config` | 37 | 保留原专有声明的 init/VINTF 文本配置 |
 
