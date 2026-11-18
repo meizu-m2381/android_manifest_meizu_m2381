@@ -36,6 +36,7 @@ Android 17 使用官方 LineageOS shim、固定摘要的 ELF 依赖修补、设�
 - [兼容修补](docs/patches.md)、[迁移其他 ROM](docs/rom-compatibility.md)
 - [检查命令](docs/validation.md)
 - [充电](docs/charging.md)、[待机](docs/suspend-adaptation.md)、[指纹](docs/fingerprint-adaptation.md)、[圆角](docs/corner-calibration.md)
+- [移动网络与信号刻度](docs/mobile-network.md)
 
 当前仍是依赖诊断启动链的适配版本；完整构建成功不代表通用 recovery/OTA
 安装已经验证。发布和安装前请核对功能状态及 [来源与许可](NOTICE.md)。

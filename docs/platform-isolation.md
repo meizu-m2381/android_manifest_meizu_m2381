@@ -11,6 +11,7 @@ M2381 的兼容处理位于设备/vendor 配置和独立二进制副本中，不
 | 旧 `Trim` 签名 | [421619](https://review.lineageos.org/c/LineageOS/android_hardware_lineage_compat/+/421619) | 使用现有 `libbase_shim` |
 | 旧 `Basename` / `Dirname` 签名 | [465067](https://review.lineageos.org/c/LineageOS/android_hardware_lineage_compat/+/465067) | 使用同一官方 shim |
 | 旧 `WriteStringToFd` 签名 | [465271](https://review.lineageos.org/c/LineageOS/android_hardware_lineage_compat/+/465271) | 使用同一官方 shim |
+| DPM 旧 `Parcel::setData` | [401141](https://review.lineageos.org/c/LineageOS/android_hardware_lineage_compat/+/401141) | 64 位官方 `libhidlbase_shim` 和独立 DPM 兼容副本 |
 | SM8550 blob 接入 shim | [472159](https://review.lineageos.org/c/LineageOS/android_device_xiaomi_sm8550-common/+/472159)、[官方提取配置](https://github.com/LineageOS/android_device_xiaomi_sm8550-common/blob/lineage-23.2/extract-files.py) | `patchelf --add-needed libbase_shim.so` |
 | 另一种旧 ABI 方案 | [465028](https://review.lineageos.org/c/LineageOS/android_device_oneplus_sm8550-common/+/465028) | 上游使用 `replace_needed` 改为 `libbase-v33.so`；本设备不需要替换整份 libbase |
 | 预编译内核头接口 | [427578](https://review.lineageos.org/c/LineageOS/android_vendor_lineage/+/427578)、[490401](https://review.lineageos.org/c/LineageOS/android_build_soong/+/490401) | `TARGET_PREBUILT_KERNEL_HEADERS`，保留通用生成器 |
@@ -19,7 +20,7 @@ M2381 的兼容处理位于设备/vendor 配置和独立二进制副本中，不
 
 ## 设备专属输入和配置
 
-`device/meizu/m2381/configs/compat/libbase-fixups.json` 固定 14 个实际打包的原厂 ELF 的原始摘要、修补摘要和旧符号。`tools/configure_blob_compat.py` 使用随源码提供的 `patchelf-0_17_2` 生成 `vendor/meizu/m2381/compat/vendor/...`，只切换对应安装规则。原始 `proprietary/` 不改写。工具先检查全组输入和已有输出；未知输入、输出冲突或规则重叠均停止。已记录摘要的旧兼容副本可以用 `--apply` 升级，检查模式拒绝未升级副本。32/64 位官方 libbase shim 和 32 位官方 vendor libui shim 由设备产品显式选择。
+`device/meizu/m2381/configs/compat/libbase-fixups.json` 固定 15 个实际打包的原厂 ELF 的原始摘要、修补摘要和旧符号。`tools/configure_blob_compat.py` 使用随源码提供的 `patchelf-0_17_2` 生成 `vendor/meizu/m2381/compat/vendor/...`，只切换对应安装规则。原始 `proprietary/` 不改写。工具先检查全组输入和已有输出；未知输入、输出冲突或规则重叠均停止。已记录摘要的旧兼容副本可以用 `--apply` 升级，检查模式拒绝未升级副本。32/64 位官方 libbase shim、64 位官方 libhidlbase shim 和 32 位官方 vendor libui shim 由设备产品显式选择。
 
 源码构建的 vendor libbinder 依赖系统 `libapexsupport.so`。设备用 `PRODUCT_VENDOR_LINKER_CONFIG_FRAGMENTS` 的 `requireLibs` 配置 linker 可达性，不修改冻结的 VNDK33 清单。
 

@@ -8,6 +8,8 @@
 | 内容 | 配置/工具 | 处理范围 |
 | --- | --- | --- |
 | 旧 libbase 与 32 位媒体 ABI | 设备 `configs/compat/`、`tools/configure_blob_compat.py`、`tools/prepare_media_helper.py` | 固定摘要，生成独立 vendor 兼容副本 |
+| DPM 旧 HIDL ABI | 同一固定摘要修补清单，官方 `libhidlbase_shim` | 64 位 `vendor.libdpmframework.so` 兼容副本 |
+| 默认选网与 NR 信号刻度 | 设备 vendor 属性与 CarrierConfig RRO | 双卡默认自动模式、受测联通卡的 NR 刻度 |
 | PD 枚举限流兼容 | `tools/configure_pd_icl.py`、`provenance/charging-pd-icl.json` | 已知版本充电模块的独立副本 |
 | tinyxml2 ABI | `tools/apply_tinyxml2_vendor_fixups.py`、`tools/verify_tinyxml2_vendor.py` | 已记录版本的 vendor 库 |
 | Adreno mapper ABI | `tools/fix_egl_mapper_getstub.py` | 已记录版本的 EGL/Vulkan 库 |

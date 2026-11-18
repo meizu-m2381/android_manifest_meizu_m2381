@@ -1,4 +1,4 @@
-# 功能状态（2026-11-17）
+# 功能状态（2026-11-19）
 
 当前受测系统为 PixelOS 17 / Android 17，使用官方 shim 和设备兼容副本。
 公共 AOSP、Aperture、CameraX 与冻结 VNDK 不需要设备专属源码修改。
@@ -16,13 +16,14 @@
 | 待机 | deep 路径拔线熄屏回归无新 panic，记录 28 次成功挂起 | s2idle 底层阻塞根因、长时功耗与全部唤醒场景 |
 | 指纹 | 原厂位置修正，用户确认录入与锁屏解锁成功 | 支付/应用认证、多模板与长期待机 |
 | 震动 | 源码 Awinic 服务，历史真机验证力度区分和停止 | 本版完整回归 |
-| 移动网络/GNSS/NFC | 保留服务和固定厂商输入 | 完整硬件验收 |
+| 移动网络 | 联通 NR SA 和 LTE 实际数据联网，关闭 Wi-Fi 后 HTTP/ICMP 通过；默认模式与旧订阅策略修复，NR 信号刻度校准，DPM 官方 shim 真机启动 | 双卡、其他运营商、语音/短信、VoLTE/VoNR、移动切换与长时稳定性 |
+| GNSS/NFC | 保留服务和固定厂商输入 | 完整硬件验收 |
 
 ## 仍存在的问题
 
-- `vendor.dpmd` 缺 `android::hardware::Parcel::setData`，`slim_daemon` 缺
-  `__emutls_get_address`。dpmd 连续崩溃曾触发已暂存系统模块回滚及重启，不能以
-  能进桌面认定长期稳定。
+- `slim_daemon` 缺 `__emutls_get_address` 仍待处理。`vendor.dpmd` 原来缺失的
+  `android::hardware::Parcel::setData` 已复用官方 shim 修复并验证启动，长时稳定性
+  仍需观察，详见 [移动网络适配](mobile-network.md)。
 - 仍依赖诊断 ramdisk、metadata 入口及匹配的启动/AVB 链；SELinux permissive、
   CPU idle 诊断限制和模块 blocklist 尚未全部收敛。
 - `DIGITAL_CLOCK_NUMBEROVERLAP` 锁屏日期有越过屏幕右边缘的已知布局问题。
