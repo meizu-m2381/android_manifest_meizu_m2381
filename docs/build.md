@@ -63,3 +63,9 @@ repo status
 默认 OTA 不会自动安装这些依赖；正式 recovery、去除诊断入口后的启动、OTA
 及双槽升级尚未完成验证。当前仓库不提供通用的一键刷机流程，见
 [功能状态](status.md)。
+
+2026-11-20 已在 WSL 完成完整 `pixelos` 目标的增量构建并安装七个逻辑分区，
+退出码为 0，安装包 CRC、候选 AVB 链和设备回读摘要通过。本机使用 Ninja、
+24 个普通任务及单任务 highmem 池；换行格式必须保持 LF，SELinux 策略中的
+CRLF 会导致 checkpolicy 失败。该次安装继续保留已验证的诊断启动依赖，
+不等于干净同步构建或正式 OTA 验收，具体版本及结果见 [完整安装](full-system-install.md)。
