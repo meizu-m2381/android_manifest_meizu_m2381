@@ -115,3 +115,6 @@ M2381 标准反馈实际经过这些路径；不能据此直接套用其他机�
 
 原始提取文件和定向 DEX dump 保存在 WSL `/home/zhaiy/m2381-haptics-work`，
 不将原厂 JAR、分区镜像或临时反汇编产物提交到源码仓。
+
+原厂私有 Tiktap 组合协议、AW8697 RTP 真机验证，以及接入 Android 标准
+组合原语的边界，见 [Tiktap 组合原语研究](tiktap-composition.md)。
