@@ -1,8 +1,30 @@
 # M2381 振动修复（2026-11-19）
 
 后续已从 Flyme 12.7 原厂备份确认标准场景映射，见
-[Flyme 原厂振动调用链核对](flyme-haptics.md)。当前已安装第三轮原厂基准力度版，
+[Flyme 原厂振动调用链核对](flyme-haptics.md)。当前已安装第四轮系统档位兼容版，
 用户主观触感验收尚未完成。下文先记本轮结果，再保留第一轮记录。
+
+## 第四轮：保留原厂基准并恢复系统档位调节
+
+- 第三轮将 LIGHT/MEDIUM/STRONG 全部设为 128，导致预设反馈忽略系统强度档位。
+  该策略不适合直接用于当前 Android framework，现已修正。原厂波形及最高档
+  128 基准保留，三档分别使用 64/96/128。相对比例参考官方 LineageOS Oplus
+  输入 FF 通路的约 1/2、3/4、1，不能称作 Flyme 自身的三档 RAM 参数。
+- 对照当前 VibrationScaler：系统 LOW/MEDIUM/HIGH 经 effect strength 传至
+  HAL。普通触摸和物理交互分别读取 haptic_feedback_intensity 和
+  hardware_haptic_feedback_intensity，不能只验证某个固定 gain 是否写入。
+- WSL 编译 HAL 和诊断程序成功（4 分 4 秒，含构建规则生成）；95 项真机控制
+  检查通过，四个预设的三档实际芯片增益均按 64/96/128 检查。
+- 另实际修改上述两个系统设置键，等待 framework 确认 TOUCH/PHYSICAL_EMULATION
+  生效，再通过不带强制标志的 feedback 0/25 触发长按与拖动。低/中/高六项均在
+  原厂驱动记录中出现对应的 gain=64/96/128、waveform=3、loop=0 和实际 set_gain；
+  关闭档两项没有启动原厂播放，共八项通过。不是仅向 HAL 直接传入三个枚举值。
+- 检查结束完整恢复原值：haptic_feedback_enabled=1，两个 intensity 均为 3。
+  未通过 GUI 拖动滑块，未据此声称所有应用的自定义时间波形均已回归。
+- 当前 HAL SHA-256：
+  `7418087c29b849c145a1a22b086c8e84b3bc114065726dd76b5dcfd4155cb919`。
+  已在真机替换挂载源、重启 HAL 并核对摘要，服务 running，第三轮文件保留以便
+  回退。不修改 AOSP、内核、固件和升压参数；既有重启/enforcing/全场景边界仍适用。
 
 ## 第三轮：恢复原厂基准力度
 
