@@ -73,8 +73,37 @@ key=25 的目标是 0x73，返回效果 5。PrebakedSegment 构造方法 code_it
 M2381 标准反馈实际经过这些路径；不能据此直接套用其他机型的 `.he` 配置。
 通知和来电还有独立 RTP 选择，本表不覆盖其全部策略。
 
-用户随后要求安装比较，已将 HAL 的 HEAVY_CLICK/CLICK/TICK 改为原厂 3/13/11
-波形，保留此前增益和 waveform/enable 触发通路，未改 AOSP；构建与真机检查
+## 力度通路的进一步核对
+
+- 普通预设在 `mzVibrateThreadRunning` 中读取 PrebakedSegment 的 effect ID，
+  交给 `performEffect(id)`；此分支不读取 effect strength。此前 HAL 的
+  每效果 8/32/48/96、LIGHT/MEDIUM 40%/65% 衰减不是此 Flyme 通路的参数。
+- `aw8697_enable_store` 在 0x77b8–0x77dc 将默认增益设为 0x80，再解析可选参数；
+  停止入口 0x7964 也向 set_gain 传 0x80。`aw869x_set_gain` 把参数低 8 位
+  写入芯片 0x39。基准为 128，不是硬件最大可编码的 255。
+- `aw8697_on_off_store` 并非每次无条件设置 128：0x7274 的字段条件成立时才重设，
+  其他情况下继承既有寄存器。真机先写增益 0x20，再分别触发原厂效果
+  30900/31008/21000，0x39 仍为 0x20；先走原厂 enable 停止入口后再触发这三项，
+  0x39 均为 0x80、0x15 分别为 3/13/11，并自然待机。因此不能把继承值误读为
+  每个场景自己的固定力度，也不能宣称本次抓到了 Flyme 开机后的全部动态状态。
+- 原厂初始化 `aw869x_misc_para_init` 在 0xf454 起读取硬件 0x39 并缓存到 gain，
+  不在该处另写某个场景增益。已从同一 super 只读核对 vendor/system/system_ext/
+  product 的 init rc，涉及马达的脚本主要配置节点权限，没有发现对这条 Awinic
+  通路写入此前 0x30 或分效果力度的规则。
+- Flyme 的时间/幅度波形在 `MzVibrateThread.run` 0x70–0x77 将浮点幅度乘 128
+  后转整数，再传给 `FlymeVibratorHelper.vibratorOn`，最终作为 enable 的第二参数。
+  HAL 保留其比例和向零截断；合法正幅度最低保留 1，满足正幅度接口边界。
+- `FlymeVibrationSettings` 中还有触觉默认 213、其他默认 255 的用户设置，
+  它们不能直接作为本机 RAM 增益：普通预设分支只传 effect ID，且驱动对持续
+  播放大于 128 的数值另有折算。不能把设置值 213 不加分析地写入增益寄存器。
+
+本次复原的是已确认的 **128 基准和普通预设无额外档位衰减**，以及显式时间波形
+幅度的 128 比例，不是移植原厂整套应用/RTP/全局状态机。与波形复原一样，
+实际机械手感及全场景等价性仍需独立验证。
+
+用户随后要求安装比较，第二轮已将 HAL 的 HEAVY_CLICK/CLICK/TICK 改为原厂
+3/13/11 波形，当时保留此前增益；第三轮按上述依据恢复原厂基准力度。
+两轮均保留 waveform/enable 触发通路，未改 AOSP；构建与真机检查
 见 [振动修复记录](haptics.md)。此前试听的 RAM 19、约 50 ms 平滑振动方案
 没有设为系统默认。触发参数及 Flyme 桌面私有场景仍需单独核对，主观触感待用户验证。
 
