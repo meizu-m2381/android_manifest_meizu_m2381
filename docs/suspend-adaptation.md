@@ -22,3 +22,11 @@ init 模块构建及 host_init_verifier 通过；正常重启后确认选择 dee
 回归记录 28 次成功挂起及 2 次失败/中止，无新看门狗 panic 或重启。
 这不是全部挂起场景通过，也不是长时间功耗结论。
 更换内核、去除已有 CPU idle 诊断配置或收敛启动链后需重新测待机与唤醒。
+
+
+2026-11-20 标准启动链回归：已去除诊断启动参数、metadata bind mount 和 CPU idle
+限制，八个 CPU 的 state1/disable 均为 0；正常启动后选择仍为 deep。
+用户拔 USB、熄屏静置约五分钟后重新连接，boot ID 保持不变，pstore 为空。
+挂起计数从 success=0/fail=0 增至 success=8/fail=2；两次中止在 freeze 阶段，
+last_failed_errno=-16，未触发 panic。日志可见 deep entry/exit 及 RTC/WLAN/基带
+唤醒。此项证明解除诊断限制后的短时离线回归通过，不能当成长时间功耗结果。

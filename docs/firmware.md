@@ -37,5 +37,5 @@ python3 tools/compare_firmware_inputs.py   --source /path/to/extracted-partition
 
 驱动、模块和配置由固定文件及摘要记录。历史 Android 17 源码同步快照位于
 `provenance/pixelos17/revisions.xml`，不代表后续全部修复的最终构建版本；发布时
-应记录当次真实版本。当前兼容修复已做定向镜像启动与部分硬件验证，仍有诊断
-启动依赖及未完成的硬件验收，见 [功能状态](status.md)。
+应记录当次真实版本。当前标准启动链已去除诊断依赖，Recovery/fastbootd、USB 和
+短时离线待机已验证；完整 OTA 与硬件验收边界见 [功能状态](status.md)。

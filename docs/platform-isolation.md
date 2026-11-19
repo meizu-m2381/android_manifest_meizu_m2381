@@ -68,4 +68,5 @@ Aperture 的 60 FPS 档位由设备 RRO 的 `config_additionalVideoConfiguration
 59–60 / 59–60 / 58 fps，传感器间隔约 16.67 ms；用户确认相机应用出现档位。
 尚未统计 Aperture 自身录像的逐帧输出，也未验证长时间热稳定录像。
 
-当前仍有诊断启动依赖、permissive 和其他待办，见 [功能状态](status.md)。
+标准启动已去除诊断依赖，SELinux 仍为 permissive；Recovery/OTA 与其他待办见
+[功能状态](status.md)。

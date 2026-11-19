@@ -36,11 +36,12 @@ python3 "$port_root/tools/check_bundled_inputs.py" --root "$android_root"
 bash "$port_root/scripts/build-pixelos.sh" "$android_root" 12
 ```
 
-构建入口会核验充电兼容模块、固定输入、LFS 与设备 ELF 兼容副本，
+构建入口会核验充电兼容模块、固定输入、LFS、设备 ELF 兼容副本及 Android DTB，
 读取上游 release 后选择 `custom_m2381-<release>-userdebug`。
 它还在 lunch 后导出 `TARGET_PREBUILT_KERNEL_HEADERS` 并确认 ARM64 设备配置。
 兼容输入缺失或与已知摘要不符时会停止；需要复现兼容副本时见
 [修补说明](patches.md)，不要绕过摘要检查。
+Android DTB 的复现及 recovery/OTA 接入见 [recovery 与 OTA](recovery-ota.md)。
 
 旧工作区需先保存本地更改，并对照上游撤销历史平台改动；也可在独立目录全新同步。
 `repo sync` 不会自动撤销本地提交。有限内存环境需按上游实际构建进程排查内存占用，单纯 export
@@ -59,10 +60,10 @@ repo status
 不是最终测试版本的锁定清单。当前远端 `main` 随提交变化，发布时应另存本次
 源码版本及本工具仓提交。
 
-现有手机仍使用匹配的诊断 ramdisk、bootconfig、模块、AVB 链和 metadata 入口。
-默认 OTA 不会自动安装这些依赖；正式 recovery、去除诊断入口后的启动、OTA
-及双槽升级尚未完成验证。当前仓库不提供通用的一键刷机流程，见
-[功能状态](status.md)。
+现有手机已使用标准 B 槽启动链，去除诊断 ramdisk、bootconfig/metadata 入口及
+CPU idle 限制；Recovery/fastbootd 已通过真机检查，完整 OTA 与跨槽升级仍在
+验证。当前仓库不提供通用的一键刷机流程，实际边界见
+[Recovery/OTA](recovery-ota.md) 和 [功能状态](status.md)。
 
 2026-11-20 已在 WSL 完成完整 `pixelos` 目标的增量构建并安装七个逻辑分区，
 退出码为 0，安装包 CRC、候选 AVB 链和设备回读摘要通过。本机使用 Ninja、

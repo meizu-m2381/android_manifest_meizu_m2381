@@ -1,5 +1,8 @@
 # 完整系统构建与安装（2026-11-20）
 
+本文记录前一轮保留诊断链的完整安装。后续标准启动链已在 B 槽验证，
+最新 Recovery/OTA 进度见 [Recovery/OTA 与标准启动链](recovery-ota.md)。
+
 完整 `pixelos` 目标已在 WSL 编译成功并安装至开发手机 B 槽。七个逻辑分区
 使用此次构建镜像，匹配 boot、init_boot 与 AVB；vendor_boot 继续保留已验证的
 诊断 ramdisk、DT 和 bootconfig。未清除 userdata 或 metadata，未改 A 槽、

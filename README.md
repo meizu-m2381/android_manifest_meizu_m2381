@@ -34,9 +34,9 @@ Android 17 使用官方 LineageOS shim、固定摘要的 ELF 依赖修补、设�
 - [当前功能与交付限制](docs/status.md)
 - [固定输入与内核来源](docs/local-inputs.md)、[固件版本](docs/firmware.md)
 - [兼容修补](docs/patches.md)、[迁移其他 ROM](docs/rom-compatibility.md)
-- [检查命令](docs/validation.md)
+- [检查命令](docs/validation.md)、[Recovery/OTA 与标准启动链](docs/recovery-ota.md)
 - [充电](docs/charging.md)、[待机](docs/suspend-adaptation.md)、[指纹](docs/fingerprint-adaptation.md)、[圆角](docs/corner-calibration.md)
 - [移动网络与信号刻度](docs/mobile-network.md)
 
-当前仍是依赖诊断启动链的适配版本；完整构建成功不代表通用 recovery/OTA
-安装已经验证。发布和安装前请核对功能状态及 [来源与许可](NOTICE.md)。
+标准 B 槽启动已去除诊断依赖，Recovery/fastbootd 和 USB 功能切换已通过真机检查；
+完整 OTA 与跨槽合并仍在验证。发布和安装前请核对功能状态及 [来源与许可](NOTICE.md)。

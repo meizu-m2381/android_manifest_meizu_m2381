@@ -1,4 +1,4 @@
-"""Remove imported Wi-Fi services which override the source-built AIDL stack.
+"""Remove imported Wi-Fi/USB providers which override the source-built AIDL stack.
 
 Keep the original extracted files; only remove their generated install rules.
 """
@@ -21,6 +21,15 @@ SOURCE_OWNED = {
     "vendor/etc/vintf/manifest/android.hardware.wifi.hostapd.xml",
     "vendor/etc/init/ssgtzd.rc",
     "vendor/overlay/WifiResCommon_Vendor_Mz.apk",
+    "vendor/bin/hw/android.hardware.usb@1.2-service-qti",
+    "vendor/bin/hw/android.hardware.usb.gadget@1.1-service-qti",
+    "vendor/etc/init/android.hardware.usb@1.2-service-qti.rc",
+    "vendor/etc/init/android.hardware.usb.gadget@1.1-service-qti.rc",
+    "vendor/etc/vintf/manifest/android.hardware.usb@1.2-service.xml",
+    "vendor/etc/vintf/manifest/android.hardware.usb.gadget@1.1-service.xml",
+    "vendor/bin/init.qcom.usb.sh",
+    "vendor/etc/init/hw/init.qcom.usb.rc",
+    "vendor/etc/usb_compositions.conf",
 }
 
 
