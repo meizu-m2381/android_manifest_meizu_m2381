@@ -22,11 +22,21 @@ wake-up／one-shot 标志、`minDelay=-1` 和零 FIFO；事件值转换为标准
 事件附带监听代次及原始时间戳，避免取消或重新监听后的旧事件重放。转发前
 保留原始 ScopedWakelock，直到新批次接管；没有新增长期唤醒锁或加速度轮询。
 
-SystemUI 原有的开关、距离检查和锁屏唤醒继续负责用户行为：
+SystemUI 原有的开关与锁屏唤醒继续负责用户行为：
 
 - `doze_pulse_on_pick_up` 控制抬起手势。
 - `doze_pick_up_gesture_ambient=0` 表示唤醒锁屏，而非仅显示环境时钟。
-- 系统原有近距离检查可抑制口袋中的抬起事件。
+
+持续遮挡实测发现，距离传感器已报告近距离时仍出现 LIFT 唤醒。本版以及
+LineageOS 23.2 的 `DozeSensors.TriggerSensor` 构造路径默认将标准抬起接口标记
+为 `performsProxCheck=true`，因此不能依赖 SystemUI 再做一次距离拦截。
+
+设备适配层已补充原厂唤醒型距离传感器的共享订阅：当前启用周期内有效的远距离
+读数才允许抬起触发，近距离、未知、无效和乱序旧读数均不允许唤醒。被遮挡的
+动作不会消耗一次性订阅，解除遮挡后下一次正常抬起仍可触发。距离传感器与其他
+客户端共用时，保持各自订阅归属，并在内部订阅结束后恢复外部批处理参数。
+外部客户端在内部监听期间加入时，也会收到当前距离值，避免破坏 on-change
+首次上报语义。没有修改公共 SystemUI，也没有屏蔽原厂距离接口。
 
 全部变更位于设备仓库，公共 framework 与原厂二进制保持不变。双击亮屏不属于
 本次修改范围。
@@ -50,8 +60,9 @@ SystemUI 原有的开关、距离检查和锁屏唤醒继续负责用户行为�
   正常自启。人工拿起已由用户确认自动进入明亮锁屏，系统日志连续记录三次
   `WAKE_REASON_LIFT`，来源为 `com.android.systemui:NODOZE pickup`。临时关闭
   开关后，用户重复拿起未亮锁屏，系统保持 Dozing；随后已恢复开启。
-- 首轮遮挡目视未亮，但距离传感器曾短暂变近后恢复远，随后又出现唤醒，不能
-  将该轮当作持续遮挡防误触通过。持续遮挡与长期误触率仍需单独验证。
+- 后续用户明确确认持续遮挡仍亮屏，现场日志也记录近距离与 LIFT 唤醒，旧版
+  防误触验证失败。修正代码已增加模拟 HAL 边界回归，正式安装后的人工复测
+  和长期误触率验证尚未完成，不能将旧版正常抬起结果当作修正版验收。
 
 原始日志、临时探针和原厂 APK 位于工作区外层 `.local-flash/pickup-20261120/`，
 不提交到 GitHub。独立行为测试不能代替整机误触率或长期功耗验收。
@@ -60,3 +71,4 @@ SystemUI 原有的开关、距离检查和锁屏唤醒继续负责用户行为�
 
 - [LineageOS Xiaomi 的私有 pickup 转标准手势](https://github.com/LineageOS/android_hardware_xiaomi/blob/lineage-23.2/hidl/sensors/1.0/Sensors.cpp)：仅参考接入方式，动作码使用本机原厂判定。
 - [LineageOS 使用真实抬起传感器的提交](https://review.lineageos.org/c/LineageOS/android_device_xiaomi_sm6250-common/+/364222)。
+- [LineageOS SystemUI 抬起手势与距离检查参数](https://github.com/LineageOS/android_frameworks_base/blob/lineage-23.2/packages/SystemUI/src/com/android/systemui/doze/DozeSensors.java)。
