@@ -93,15 +93,14 @@ ADB root 通过系统原有「Root 调试」开关启用，无需诊断脚本强
 `/metadata/bootdiag.disabled-20261120` 保留，再次重启完成。原诊断路径确实不存在，
 bootconfig 和挂载表仍无诊断引用，USB 服务正常；无需删除备份来证明解除依赖。
 
-Recovery 界面、USB ADB、电池、fastbootd 与上述标准启动已完成真机检查；完整包
-sideload 和跨槽安装/合并仍在验证。解除 CPU idle 限制后的拔线熄屏短测
+Recovery 界面、USB ADB、电池、fastbootd 与上述标准启动已完成真机检查。解除 CPU idle 限制后的拔线熄屏短测
 新增 8 次成功挂起、2 次 freeze 阶段中止；boot ID 未变且 pstore 为空，详见
 [待机路径](suspend-adaptation.md)。
 USB 通过 framework 的 svc usb 依次切换 MTP、PTP、仅 ADB，均实际
 CONFIGURED、保留有线 ADB，boot ID 未变，最后恢复原始配置。
 完整 `pixelos` 目标已在 WSL 使用 Siso 完成，退出码 0，178,830 项任务；
 API/ABI、apex_sepolicy_tests 和 host_apex_verifier 等构建检查通过。
-本次包为 `PixelOS_m2381-17.0-20261119-1854.zip`，3,474,951,279 字节，
+首个候选包为 `PixelOS_m2381-17.0-20261119-1854.zip`，3,474,951,279 字节，
 SHA-256 为 `03eda347d2af356c6f2e98af2aeb5fc2dcafdc0b901556ad32943826026d104c`。
 最终 target_files 的 13 个分区与 payload 一致，官方 ota_extractor 提取回读
 13/13 通过；ZIP CRC、payload 流式哈希、metadata 哈希、AVB 全链及主机整包和
@@ -111,6 +110,67 @@ payload 签名检查均通过。再次解包 OTA 提取的 ramdisk/vendor，确�
 复用明确不完整的 archive manifest，不宣称全新同步或完整来源锁定。
 SELinux permissive 与设备完整 enforcing 验收是独立
 事项，不能由 OTA 成功推断。
+
+### 完整安装与真实快照合并
+
+上述完整包已从标准 B 槽执行官方 `adb reboot sideload-auto-reboot` 和 sideload。
+主机退出码 0、total xfer 1.00x；手机实际启动 A 槽，boot_completed=1，13 个分区
+按 payload 实际字节数回读 SHA-256 全部一致。userdata UUID 与原十个第三方
+应用列表保留，原 `/metadata/bootdiag` 不存在，无诊断参数或挂载，源码 USB 服务正常。
+当前内核无 `/dev/pmsg0`，未取得重启后持久化 recovery 安装日志；未将自动重启
+本身当成安装成功证据。Recovery 安装后的 snapshot=none 也不作为合并证据。
+
+随后从 A 槽通过官方源码构建的 `update_engine_client --update --follow` 应用同一
+完整 payload：未改时间戳、未清除数据、未手动标记槽位成功。客户端返回 kSuccess，
+更新后真实 snapshot 为 unverified，snapuserd/userspace snapshots 均为 1，B 被选为
+活动槽。重启后实际进入 B，观察到 merging，再通过官方 `--merge` 等待清理成功，
+最终 snapshot 和 BootControl merge status 均为 none。B 自动标记 successful，
+13 个分区回读再次全部匹配；userdata UUID、十个应用列表、源码 USB、deep 模式及
+八个 CPU state1/disable=0 均保留。原始证据分别为
+`recovery-full-ota-result.json`、`android-full-ota-result.json` 和 merge 日志。
+
+完整包首次启动暴露了媒体兼容问题：64 位 codec2 缺少旧 GraphicBufferMapper::lock，
+而此前仅 32 位配置了官方 libui shim。现将同一
+[394610](https://review.lineageos.org/c/LineageOS/android_hardware_lineage_compat/+/394610)
+shim 扩展到 64 位，固定原始/修补摘要，完整包重建及重新安装验证单独记录。
+另有一次音频 `stringToAudioSource` 崩溃及相机服务查询造成的启动 watchdog 延迟。
+原厂/源码音频枚举各 8,000 次转换和现装系统 15 次输入流打开/释放均通过（未开始
+录音），暂未据此替换音频库。不能用历史摄像、录音、通话结果覆盖本次完整包回归。
+用户夜间未首次解锁，状态为 RUNNING_LOCKED；应用私有加密数据和全部交互功能
+需要解锁后重新验收。重启后读取到一份内容损坏的旧 console-ramoops，不能据此
+推断本次 kernel panic，也不能报告 pstore 为空；当前 boot reason 为 reboot,shell。
+
+### 最终修正包与复验
+
+最终受测包是 `PixelOS_m2381-17.0-20261119-2333.zip`，3,474,917,783 字节，
+SHA-256 为 `9211bad97d1665a7c1c2bca0ebaa8207197995e0c0f1829751abd3c10b94bc80`。
+完整 `pixelos` 增量构建退出码 0，Siso 实际执行 196 项、用时约 6 分钟。
+ZIP CRC、metadata/payload 哈希、整包与 payload 签名、13/13 官方提取回读及完整 AVB
+链通过。重新解包确认 USB、118/340 模块、DTB、PD 模块和无诊断入口；全部 18 项
+固定摘要兼容副本正确，两种架构的 libui shim 均导出所需旧 mapper 符号。
+六项兼容输入回归用例实际运行通过，没有跳过。
+
+对这个修正包重新完成两条安装路径：Recovery B→A 完整安装后 13 分区回读匹配；
+Android update_engine A→B 再次创建真实 userspace snapshots，重启后 merging→none，
+官方 merge 回调成功、B 自动 successful，13 分区回读再次匹配。未手动标记成功、
+未取消或重置快照、未清除用户数据。两次均保留 userdata UUID 与十个第三方应用列表。
+
+Recovery 安装后、Android OTA 合并后和额外普通重启后，分别执行两种架构的
+C2/OMX 硬件 AVC 编码：每项输出 10 帧及 EOS；各完成 15 次音频输入流打开/释放，
+未开始录音或播放声音。音频、视频 codec、音频 codec 服务 PID 在受测窗口保持稳定，
+不再出现旧 GraphicBufferMapper 缺符号。额外普通重启约 25 秒到 boot_completed，
+无新增 ANR/tombstone；B successful、snapshot none、USB CONFIGURED、deep 及八个
+CPU state1/disable=0 正常，原诊断目录仍不存在。初版音频崩溃/相机查询延迟未在
+这些修正版启动中复现，不能由短测认定长期问题完全消失。
+
+最终结果在本地 `media-final/` 下的 `recovery-full-ota-result.json`、
+`android-full-ota-result.json`、三份 `*-media-runtime.json` 和
+`normal-reboot-result.json`。手机最终为 B 槽正常系统；首次解锁、应用加密数据、
+摄像实拍、实际通话和长时待机仍需用户参与或后续独立验收。没有把这些历史功能
+测试或本次无声编码测试当成完整硬件验收。
+结束时已删除手机上的临时 OTA ZIP、辅助 bootctl/update_engine_client 和本轮探针，
+确认同一 boot ID 下系统、媒体与 USB 服务继续正常；本地镜像/日志/分区备份及
+改名保留的旧诊断目录未删除。
 
 跨槽预检发现 23 组固件中有 19 组 A/B 摘要不同。已阅读 LineageOS 官方
 [固件一致性模板](https://github.com/LineageOS/lineage_wiki/blob/main/_includes/templates/device_specific/before_lineage_install_ab_copy_partitions.md)

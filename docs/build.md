@@ -61,11 +61,12 @@ repo status
 源码版本及本工具仓提交。
 
 现有手机已使用标准 B 槽启动链，去除诊断 ramdisk、bootconfig/metadata 入口及
-CPU idle 限制；Recovery/fastbootd 已通过真机检查，完整 OTA 与跨槽升级仍在
-验证。当前仓库不提供通用的一键刷机流程，实际边界见
+CPU idle 限制；Recovery 完整包安装、Android update_engine 跨槽快照合并和 fastbootd
+已通过真机检查；媒体兼容修正包已再次完成两条安装路径及编码/普通重启复验。
+当前仓库不提供通用的一键刷机流程，实际边界见
 [Recovery/OTA](recovery-ota.md) 和 [功能状态](status.md)。
 
-2026-11-20 已在 WSL 完成完整 `pixelos` 目标的增量构建并安装七个逻辑分区，
+较早一轮已在 WSL 完成完整 `pixelos` 目标的增量构建并安装七个逻辑分区，
 退出码为 0，安装包 CRC、候选 AVB 链和设备回读摘要通过。本机使用 Ninja、
 24 个普通任务及单任务 highmem 池；换行格式必须保持 LF，SELinux 策略中的
 CRLF 会导致 checkpolicy 失败。该次安装继续保留已验证的诊断启动依赖，

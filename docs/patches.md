@@ -7,7 +7,7 @@
 
 | 内容 | 配置/工具 | 处理范围 |
 | --- | --- | --- |
-| 旧 libbase 与 32 位媒体 ABI | 设备 `configs/compat/`、`tools/configure_blob_compat.py`、`tools/prepare_media_helper.py` | 固定摘要，生成独立 vendor 兼容副本 |
+| 旧 libbase 与媒体 ABI | 设备 `configs/compat/`、`tools/configure_blob_compat.py`、`tools/prepare_media_helper.py` | 固定摘要；ARM/ARM64 codec 使用官方 libui shim，32 位保留旧 codec2 helper |
 | DPM 旧 HIDL ABI | 同一固定摘要修补清单，官方 `libhidlbase_shim` | 64 位 `vendor.libdpmframework.so` 兼容副本 |
 | QCRIL 短信开机优化 | 固定摘要兼容工具与官方 419259/418511 | 两项 64 位库副本等长改名，原始输入与数据库不变 |
 | 原厂 IMS/RCS 组件 | vendor 的 `ims-stack.mk`、`rcs-stack.mk` | 同机 APK/Java HAL 库及当前 platform 签名；RCS 仍有开通限制 |
