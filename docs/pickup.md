@@ -61,8 +61,17 @@ LineageOS 23.2 的 `DozeSensors.TriggerSensor` 构造路径默认将标准抬起
   `WAKE_REASON_LIFT`，来源为 `com.android.systemui:NODOZE pickup`。临时关闭
   开关后，用户重复拿起未亮锁屏，系统保持 Dozing；随后已恢复开启。
 - 后续用户明确确认持续遮挡仍亮屏，现场日志也记录近距离与 LIFT 唤醒，旧版
-  防误触验证失败。修正代码已增加模拟 HAL 边界回归，正式安装后的人工复测
-  和长期误触率验证尚未完成，不能将旧版正常抬起结果当作修正版验收。
+  防误触验证失败。修正版提交 `28b9f38` 已推送 GitHub，并以完整 Android OTA
+  A→B 安装。payload 哈希、签名、AVB 链和 ZIP CRC 通过，真实快照合并清理、
+  自动成功槽及 13 个分区 SHA-256 回读均通过；userdata 与用户应用保留。
+- 修正版模拟 HAL 回归已在真机通过，覆盖近距离、未知／无效／乱序旧距离读数、
+  重新抬起、与 SystemUI 既有距离订阅共存、批处理恢复和启用失败回退。用户随后
+  实测确认“遮挡未亮，正常拿起亮”。日志显示遮挡时
+  `Suppressed pickup: proximity known=1 far=0`，移开后出现正常
+  `WAKE_REASON_LIFT`；开关关闭／开启四次检查通过，ADB unroot 后 HAL、SystemUI
+  和显示服务进程保持不变。
+- 本次 OTA SHA-256：`7c4f52bd39ea2fc490c6a2ecf4a7736d90f8ef2a29402c6ff70cba08cdd5c039`。
+  持续近距离误触率与长期功耗仍需观察。
 
 原始日志、临时探针和原厂 APK 位于工作区外层 `.local-flash/pickup-20261120/`，
 不提交到 GitHub。独立行为测试不能代替整机误触率或长期功耗验收。
