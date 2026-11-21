@@ -77,5 +77,5 @@ BootControl 报告 AIDL；原厂 NFC 持有 nq-nci，关闭/开启成功并恢�
 三轮 crash buffer 均为空，启动早期完整日志已本地保存。当前尚未重现首次OTA启动的
 触发条件，不添加固定睡眠或只隐藏错误的补丁。
 NFC 开关/进程正常不能代替读卡、HCE 和 eSE；温度列表正常不能替代持续负载热保护；
-SLIM 启动不能替代室外 GNSS。RCS 注册、AOD 环境光亮暗档、SELinux enforcing
-和长时功耗仍分别追踪，见 [功能状态](status.md)。
+SLIM 启动不能替代室外 GNSS。后续包已接通并验收 AOD 环境光亮暗档与夜间窗口，
+见 [显示](display.md)；RCS 注册、SELinux enforcing 和长时功耗仍分别追踪，见 [功能状态](status.md)。
