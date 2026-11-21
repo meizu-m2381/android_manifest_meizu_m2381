@@ -20,7 +20,7 @@ M2381 的兼容处理位于设备/vendor 配置和独立二进制副本中，不
 
 ## 设备专属输入和配置
 
-`device/meizu/m2381/configs/compat/libbase-fixups.json` 固定 18 个实际打包的原厂 ELF 的原始摘要、修补摘要和旧符号。`tools/configure_blob_compat.py` 使用随源码提供的 `patchelf-0_17_2` 生成 `vendor/meizu/m2381/compat/vendor/...`，只切换对应安装规则。原始 `proprietary/` 不改写。工具先检查全组输入和已有输出；未知输入、输出冲突或规则重叠均停止。已记录摘要的旧兼容副本可以用 `--apply` 升级，检查模式拒绝未升级副本。32/64 位官方 libbase/libui shim 和 64 位官方 libhidlbase shim 由设备产品显式选择。
+`device/meizu/m2381/configs/compat/libbase-fixups.json` 固定 20 个实际打包的原厂 ELF 的原始摘要、修补摘要和旧符号。`tools/configure_blob_compat.py` 使用随源码提供的 `patchelf-0_17_2` 生成 `vendor/meizu/m2381/compat/vendor/...`，只切换对应安装规则。原始 `proprietary/` 不改写。工具先检查全组输入和已有输出；未知输入、输出冲突或规则重叠均停止。已记录摘要的旧兼容副本可以用 `--apply` 升级，检查模式拒绝未升级副本。SLIM 补真实 LLVM TLS 动态依赖，显示 DAL 使用固定原字节和偏移修复 VSYNC 登记时序；两者边界见 [服务归属](service-ownership.md)。32/64 位官方 libbase/libui shim 和 64 位官方 libhidlbase shim 由设备产品显式选择。
 
 源码构建的 vendor libbinder 依赖系统 `libapexsupport.so`。设备用 `PRODUCT_VENDOR_LINKER_CONFIG_FRAGMENTS` 的 `requireLibs` 配置 linker 可达性，不修改冻结的 VNDK33 清单。
 

@@ -125,6 +125,31 @@ class BlobTest(unittest.TestCase):
             self.assertFalse((self.vendor / 'compat').exists())
             self.assertEqual((self.vendor / 'Android.mk').read_bytes(), rules)
 
+    def test_invalid_offset_fixup_preserves_all_outputs_and_rules(self):
+        device = self.root / 'device'
+        config = device / 'configs/compat/libbase-fixups.json'
+        config.parent.mkdir(parents=True)
+        rules = (self.vendor / 'Android.mk').read_bytes()
+        for invalid in ['bytes', 'length', 'negative', 'past_end', 'overlap']:
+            manifest = json.loads(json.dumps(self.manifest))
+            entry = next(e for e in manifest['files'] if e.get('offset_replacements'))
+            replacement = entry['offset_replacements'][0]
+            if invalid == 'bytes':
+                replacement['before_hex'] = '00000000'
+            elif invalid == 'length':
+                replacement['after_hex'] += '00'
+            elif invalid == 'negative':
+                replacement['offset'] = '-1'
+            elif invalid == 'past_end':
+                replacement['offset'] = '0x10000000'
+            else:
+                entry['offset_replacements'].append(dict(replacement))
+            config.write_text(json.dumps(manifest))
+            with self.assertRaises(ValueError):
+                self.compat.configure(self.aosp, device, self.vendor, True)
+            self.assertFalse((self.vendor / 'compat').exists())
+            self.assertEqual((self.vendor / 'Android.mk').read_bytes(), rules)
+
 
 if __name__ == '__main__':
     unittest.main()

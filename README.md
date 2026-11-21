@@ -39,6 +39,7 @@ Android 17 使用官方 LineageOS shim、固定摘要的 ELF 依赖修补、设�
 - [移动网络与信号刻度](docs/mobile-network.md)
 - [自动亮度与原厂校准](docs/auto-brightness.md)
 - [抬起亮屏](docs/pickup.md)、[双击亮屏](docs/double-tap.md)、[AOD与显示链路](docs/display.md)
+- [硬件服务归属、SLIM、VSYNC与震动修复](docs/service-ownership.md)
 
 标准启动已去除诊断依赖，Recovery 完整包安装、Android OTA 跨槽合并、fastbootd 和 USB 功能切换已通过真机检查；
 修正包已重复安装与合并，ARM/ARM64 硬件编码及普通重启通过；首次解锁后的全部硬件和长期回归仍需验收。发布和安装前请核对功能状态及 [来源与许可](NOTICE.md)。
