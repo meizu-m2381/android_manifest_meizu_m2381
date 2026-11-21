@@ -57,6 +57,22 @@ framework 缓存支持列表，临时替换 HAL 无法刷新它，必须新启�
 ## 验证边界
 
 真实 ARM ELF 与安装归属的主机回归 9 项通过，无跳过。
+正式包 SHA-256 为 `5e56fb645a1898b57764543faa4fe2f40e98e546d60e52914352588f30240d6b`。
+Android A→B 全量 OTA、真实 userspace snapshot 合并清理、自动启动成功标记和
+全部 13 分区回读匹配通过，userdata UUID 与原有应用保留。实际镜像含唯一 init
+定义且不含退役服务；安装摘要与候选测试 ELF 一致。
+
+新启动系统连接 `ThermalHAL 2.0 connected: yes`、HAL Ready 为 true；Power、
+NFC、BootControl 与 SLIM 各一个进程，四个退役主服务均无进程。
+BootControl 报告 AIDL；原厂 NFC 持有 nq-nci，关闭/开启成功并恢复原状态。
+正式震动直接检查 0 失败，framework 支持列表含 DOUBLE_CLICK；系统预设及
+时间波形测试没有非法幅度错误，六轮亮屏/AOD 无重复 VSYNC。
+关闭 ADB root 后普通重启通过，服务及抬起/双击监听恢复，仍处于 B 槽。
+
+本包首次启动同时再次出现原厂音频 HAL 的两次初始化崩溃，位置分别在
+`libagm.so/session_obj_get_from_pool` 与 `libaudioroute` XML 初始化；服务自动恢复。
+额外普通重启的 crash buffer 为空。这是仍需定位的启动时序问题，不能将本轮
+服务整理通过扩大为全部硬件没有崩溃；也不能归为已修复的旧 audio enums 问题。
 NFC 开关/进程正常不能代替读卡、HCE 和 eSE；温度列表正常不能替代持续负载热保护；
 SLIM 启动不能替代室外 GNSS。RCS 注册、AOD 环境光亮暗档、SELinux enforcing
 和长时功耗仍分别追踪，见 [功能状态](status.md)。

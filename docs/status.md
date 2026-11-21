@@ -1,8 +1,11 @@
-# 功能状态（2026-11-20）
+# 功能状态（2026-11-21）
 
 当前受测系统为 PixelOS 17 / Android 17，使用官方 shim 和设备兼容副本。
 公共 AOSP、Aperture、CameraX 与冻结 VNDK 不需要设备专属源码修改。
 以下区分已执行的检查与尚未完成的验收；原始照片、日志和分区备份不随仓库分发。
+11月21日服务整理包已完成 A→B OTA、合并清理及 13 分区回读；唯一主服务、SLIM、
+DOUBLE_CLICK、六轮亮屏/AOD 和非root普通重启检查通过，详见 [服务归属](service-ownership.md)。
+首次启动的原厂 AGM/音频路由初始化崩溃再次出现、自动恢复，仍未解决。
 本次标准 OTA 包重测了启动、安装/合并、USB 状态、无声编码和音频输入初始化；
 表内其余硬件结果属于历史验证，不能自动视为这个完整包已经重新验收。
 
@@ -28,9 +31,12 @@
 
 ## 仍存在的问题
 
-- `slim_daemon` 缺 `__emutls_get_address` 仍待处理。`vendor.dpmd` 原来缺失的
+- `slim_daemon` 的 LLVM TLS 动态依赖已修复，正式 OTA 后及非root普通重启均保持运行；
+  定位精度仍需室外验收。`vendor.dpmd` 原来缺失的
   `android::hardware::Parcel::setData` 已复用官方 shim 修复并验证启动，长时稳定性
   仍需观察，详见 [移动网络适配](mobile-network.md)。
+- 原厂音频 HAL 首次启动在 AGM session pool 与 audio_route XML 初始化处崩溃，
+  服务自动恢复，额外普通重启未复现；还需定位，详见 [记录](service-ownership.md)。
 - 标准启动链已移除诊断 ramdisk、metadata 入口和 CPU idle 限制；跨槽固件已通过官方包同步并回读，
   最终修正包完整 Recovery 安装与 Android OTA 合并通过。SELinux 仍为 permissive，enforcing、CTS/VTS 尚未验收。
 - `DIGITAL_CLOCK_NUMBEROVERLAP` 锁屏日期有越过屏幕右边缘的已知布局问题。
