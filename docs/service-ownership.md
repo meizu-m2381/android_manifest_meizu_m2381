@@ -15,6 +15,8 @@
 安装项裁剪可用 `tools/configure_service_ownership.py /path/to/android` 重现，
 工具保持原始提取文件不变。USB/USB Gadget、Health/原厂充电管理、sensor_aux/传感器
 Multi-HAL、软硬件 codec 的职责各不相同，没有按名称相近批量移除。
+原厂 `init.qcom.rc` 的全局 Make 安装规则也必须移除，即使产品已选设备源码模块，
+同路径旧规则仍会覆盖它；整包检查需比较实际镜像内容，不能只看设备源码。
 
 ## SLIM
 

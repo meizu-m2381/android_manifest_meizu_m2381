@@ -33,7 +33,11 @@ class ServiceOwnershipTest(unittest.TestCase):
                             'include $(BUILD_PREBUILT)\n\n')
             (vendor / 'Android.mk').write_text(''.join(make))
             (vendor / 'm2381-vendor.mk').write_text('PRODUCT_PACKAGES += \\\n' +
-                    ''.join(f'    stock_{i} \\\n' for i in range(len(paths))) + '\n')
+                    ''.join(f'    stock_{i} \\\n' for i in range(len(paths))) +
+                    '    init.qcom.rc\n')
+            source_init = device / 'init/init.qcom.rc'
+            source_init.parent.mkdir()
+            source_init.write_text('# device-owned service definitions\n')
             (device / 'proprietary-files.txt').write_text('\n'.join(paths) + '\n')
             configure(root, SOURCE_OWNED)
             installed = (vendor / 'Android.mk').read_text()
@@ -41,6 +45,8 @@ class ServiceOwnershipTest(unittest.TestCase):
                 self.assertNotIn(f'proprietary/{path}\n', installed)
             for path in retained:
                 self.assertIn(f'proprietary/{path}\n', installed)
+            self.assertIn('    init.qcom.rc\n', (vendor / 'm2381-vendor.mk').read_text())
+            self.assertEqual(source_init.read_text(), '# device-owned service definitions\n')
             for path in paths:
                 self.assertEqual((vendor / 'proprietary' / path).read_bytes(),
                                  b'preserved original')

@@ -14,6 +14,7 @@ SOURCE_OWNED = {
     'vendor/bin/hw/android.hardware.boot@1.2-service',
     'vendor/etc/init/android.hardware.boot@1.2-service.rc',
     'vendor/etc/vintf/manifest/android.hardware.boot@1.2.xml',
+    'vendor/etc/init/hw/init.qcom.rc',
 }
 
 if __name__ == '__main__':
